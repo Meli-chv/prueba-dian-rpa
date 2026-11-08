@@ -1,0 +1,19 @@
+archivo,numero_factura,fecha_emision,nit_emisor,codigo,descripcion,cantidad,precio_unitario
+factura_prueba_01,FEV16613,2025-09-11,868695681,SRV-1002,Mantenimiento preventivo de servidores en sitio con reporte,1.0,2174137.09
+factura_prueba_01,FEV16613,2025-09-11,868695681,PRD-001,Servicio de soporte técnico mensual nivel 2 para infraestructura,10.0,4475473.36
+factura_prueba_01,FEV16613,2025-09-11,868695681,HW-889,Disco SSD 1 TB empresarial,1.0,2934489.85
+factura_prueba_02,FEV27056,2025-02-08,883359230,A-3301,Switch administrable 24 puertos,1.0,2985453.46
+factura_prueba_02,FEV27056,2025-02-08,883359230,HW-889,Disco SSD 1 TB empresarial,3.0,2674501.84
+factura_prueba_02,FEV27056,2025-02-08,883359230,CONS-15,Consultoría en automatización de procesos (horas),10.0,3512693.79
+factura_prueba_02,FEV27056,2025-02-08,883359230,SKU4520,Licencia anual de software de monitoreo,10.0,1425140.07
+factura_prueba_03,FEV36140,2025-09-22,817799708,MAT-77,Cable UTP categoría 6 x 305 m,1.0,3162897.05
+factura_prueba_03,FEV36140,2025-09-22,817799708,HW-889,Disco SSD 1 TB empresarial,1.0,3019301.27
+factura_prueba_03,FEV36140,2025-09-22,817799708,A-3301,Switch administrable 24 puertos,2.0,2266558.12
+factura_prueba_03,FEV36140,2025-09-22,817799708,CONS-15,Consultoría en automatización de procesos (horas),2.0,3264700.18
+factura_prueba_04,FEV20771,2025-07-24,894928115,MAT-77,Cable UTP categoría 6 x 305 m,10.0,1602244.96
+factura_prueba_04,FEV20771,2025-07-24,894928115,SRV-1002,Mantenimiento preventivo de servidores en sitio con reporte,12.0,3158989.37
+factura_prueba_04,FEV20771,2025-07-24,894928115,A-3301,Switch administrable 24 puertos,5.0,1943686.87
+factura_prueba_05,FEV24166,2025-08-07,829550820,MAT-77,Cable UTP categoría 6 x 305 m,3.0,2466325.51
+factura_prueba_05,FEV24166,2025-08-07,829550820,SRV-1002,Mantenimiento preventivo de servidores en sitio con reporte,12.0,1928645.7
+factura_prueba_05,FEV24166,2025-08-07,829550820,SKU4520,Licencia anual de software de monitoreo,2.0,2798641.23
+factura_prueba_05,FEV24166,2025-08-07,829550820,CONS-15,Consultoría en automatización de procesos (horas),24.0,1980958.69
