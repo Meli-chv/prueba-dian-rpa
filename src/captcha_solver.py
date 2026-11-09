@@ -29,7 +29,7 @@ import time
 from dataclasses import dataclass
 
 import requests
-from playwright.sync_api import Error as PWError, Page
+from motor import Error as PWError, Page
 
 log = logging.getLogger("captcha")
 

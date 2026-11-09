@@ -2,3 +2,4 @@
 __pycache__/
 output/.perfil_navegador/
 .venv/
+output/.perfil_chrome/

@@ -27,7 +27,7 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 from urllib.parse import urljoin
 
-from playwright.sync_api import BrowserContext, Page, TimeoutError as PWTimeout, sync_playwright
+from motor import MOTOR, BrowserContext, Page, TimeoutError as PWTimeout, sync_playwright
 
 from captcha_solver import resolver as resolver_captcha
 
@@ -166,26 +166,36 @@ def consultar_cufe(page: Page, ctx: BrowserContext, cufe: str, nit: str, carpeta
 
 
 def abrir_navegador(p, salida: Path) -> BrowserContext:
-    """Prefiere el Google Chrome instalado (Cloudflare confía más en él que en el
-    Chromium de pruebas), sin la bandera --enable-automation ni la barra de
-    "controlado por software automatizado", con ventana maximizada y perfil
-    persistente para reutilizar las cookies de Cloudflare entre corridas."""
+    """Abre el navegador de la forma menos detectable posible por Cloudflare.
+
+    Modo 1 (recomendado, CONECTAR_CHROME=http://127.0.0.1:9222): el robot se conecta a un
+      Google Chrome abierto normalmente por ejecutar.bat con un perfil propio. Chrome no
+      lleva ninguna bandera de automatización y una persona puede resolver el captcha ahí.
+    Modo 2: el robot lanza el Chrome instalado con perfil persistente, con sandbox y sin
+      argumentos extra (patchright recomienda no tocar user-agent, viewport ni flags).
+    """
+    url = os.getenv("CONECTAR_CHROME", "").strip()
+    if url:
+        navegador = p.chromium.connect_over_cdp(url)
+        log.info("Motor %s conectado a Chrome abierto en %s", MOTOR, url)
+        return navegador.contexts[0] if navegador.contexts else navegador.new_context(accept_downloads=True)
+
     opciones = dict(
         user_data_dir=str(salida / ".perfil_navegador"),
         headless=os.getenv("HEADLESS", "0") == "1",
-        accept_downloads=True, locale="es-CO", timezone_id="America/Bogota",
-        no_viewport=True,
-        ignore_default_args=["--enable-automation"],
-        args=["--disable-blink-features=AutomationControlled", "--start-maximized"],
+        accept_downloads=True, no_viewport=True,
+        chromium_sandbox=(os.name == "nt"),   # en Windows evita el aviso --no-sandbox que delata al robot
     )
+    if os.getenv("NAVEGADOR_RUTA"):                # ruta explícita a un ejecutable de Chrome/Chromium
+        return p.chromium.launch_persistent_context(executable_path=os.environ["NAVEGADOR_RUTA"], **opciones)
     canal = os.getenv("NAVEGADOR", "chrome")      # chrome | msedge | chromium
     if canal != "chromium":
         try:
             ctx = p.chromium.launch_persistent_context(channel=canal, **opciones)
-            log.info("Navegador: %s instalado en el equipo", canal)
+            log.info("Motor %s con %s instalado en el equipo", MOTOR, canal)
             return ctx
         except Exception as e:
-            log.warning("No se pudo abrir %s (%s); se usa el Chromium de Playwright", canal, str(e).splitlines()[0])
+            log.warning("No se pudo abrir %s (%s); se usa el Chromium del motor", canal, str(e).splitlines()[0])
     return p.chromium.launch_persistent_context(**opciones)
 
 
@@ -241,7 +251,10 @@ def ejecutar(pares: list[tuple[str, str]], salida: Path, pausa_s: float = 4.0) -
             resultados.append(r)
             if i < len(pares):
                 time.sleep(pausa_s)   # cortesía con el servicio público
-        ctx.close()
+        try:
+            ctx.close()   # en modo conectado solo se desconecta
+        except Exception:
+            pass
 
     with (salida / "bitacora_rpa.csv").open("w", newline="", encoding="utf-8-sig") as f:
         w = csv.DictWriter(f, fieldnames=list(asdict(resultados[0]).keys()))

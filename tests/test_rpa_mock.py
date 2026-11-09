@@ -73,16 +73,23 @@ def simular(route):
 
 
 if __name__ == "__main__":
-    import playwright.sync_api as pw
-
-    original = pw.BrowserType.launch_persistent_context
+    import motor
+    BT = motor.BrowserType
+    orig_launch, orig_cdp = BT.launch_persistent_context, BT.connect_over_cdp
 
     def con_simulacion(self, *a, **kw):
-        ctx = original(self, *a, **kw)
+        ctx = orig_launch(self, *a, **kw)
         ctx.route("**/*", simular)
         return ctx
 
-    pw.BrowserType.launch_persistent_context = con_simulacion
+    def cdp_con_simulacion(self, *a, **kw):
+        nav = orig_cdp(self, *a, **kw)
+        for c in nav.contexts:
+            c.route("**/*", simular)
+        return nav
+
+    BT.launch_persistent_context, BT.connect_over_cdp = con_simulacion, cdp_con_simulacion
+    print("Motor:", motor.MOTOR, "| modo:", "conectado a Chrome" if os.getenv("CONECTAR_CHROME") else "lanzado por el robot")
     import observabilidad as obs
     import time as _t
     pares = [(rpa_dian.leer_cufes(RAIZ / "config/cufes.txt")[0][0], NIT), ("0" * 96, NIT), ("no-es-un-cufe", NIT)]

@@ -25,7 +25,22 @@ if not exist ".venv" (
   playwright install chromium || (pause & exit /b 1)
 ) else (
   call .venv\Scripts\activate
+  pip install -q -r requirements.txt
 )
+
+rem --- Chrome normal (sin banderas de automatizacion) al que el robot se conecta ---
+set "CHROME=%ProgramFiles%\Google\Chrome\Application\chrome.exe"
+if not exist "%CHROME%" set "CHROME=%ProgramFiles(x86)%\Google\Chrome\Application\chrome.exe"
+if not exist "%CHROME%" set "CHROME=%LocalAppData%\Google\Chrome\Application\chrome.exe"
+if exist "%CHROME%" goto chrome_ok
+echo [AVISO] No se encontro Google Chrome: el robot abrira su propio navegador.
+goto chrome_fin
+:chrome_ok
+echo Abriendo Google Chrome para la consulta (perfil propio del robot)...
+start "" "%CHROME%" --remote-debugging-port=9222 --user-data-dir="%~dp0output\.perfil_chrome" --no-first-run --no-default-browser-check "https://catalogo-vpfe.dian.gov.co/User/SearchDocument"
+set "CONECTAR_CHROME=http://127.0.0.1:9222"
+timeout /t 6 >nul
+:chrome_fin
 
 echo [2/3] Validando los CUFE...
 python main.py validar
