@@ -1,0 +1,47 @@
+{
+  "fecha": "2026-11-08 22:05:14",
+  "duracion_seg": 48.1,
+  "rpa": {
+    "cufes": 3,
+    "estados": {
+      "descargado": 1,
+      "no_encontrado": 1,
+      "cufe_invalido": 1
+    },
+    "seg_promedio_por_cufe": 14.1,
+    "seg_promedio_captcha": 13.9,
+    "tasa_reintento": 0.0,
+    "captcha_por_metodo": {
+      "clic+no_requerido": 2
+    },
+    "throughput_cufes_hora": 143.0,
+    "problemas": [
+      {
+        "cufe": "0000000000000000…",
+        "estado": "no_encontrado",
+        "detalle": "La DIAN no reporta el documento con ese CUFE/NIT"
+      },
+      {
+        "cufe": "no-es-un-cufe…",
+        "estado": "cufe_invalido",
+        "detalle": "No es un SHA-384 hexadecimal de 96 caracteres"
+      }
+    ]
+  },
+  "ocr": {
+    "archivos": 1,
+    "procesados_ok": 1,
+    "tiempo_total_seg": 4.52,
+    "tiempo_promedio_por_factura_seg": 4.52,
+    "tiempo_promedio_ocr_por_pagina_seg": 1.82,
+    "confianza_media_ocr": 90.06,
+    "items_totales": 3,
+    "exactitud_media_vs_capa_texto_pct": 100.0,
+    "facturas_para_revision": 0,
+    "dpi": 300,
+    "motor": "Tesseract 5.3.4 (spa) --oem 1 --psm 3",
+    "revision": [],
+    "throughput_facturas_hora": 796.0
+  },
+  "estado": "PARCIAL"
+}

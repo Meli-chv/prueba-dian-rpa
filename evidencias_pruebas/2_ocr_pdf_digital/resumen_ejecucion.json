@@ -1,0 +1,20 @@
+{
+  "fecha": "2026-11-08 22:06:05",
+  "duracion_seg": 16.9,
+  "ocr": {
+    "archivos": 5,
+    "procesados_ok": 5,
+    "tiempo_total_seg": 16.48,
+    "tiempo_promedio_por_factura_seg": 3.3,
+    "tiempo_promedio_ocr_por_pagina_seg": 1.19,
+    "confianza_media_ocr": 89.7,
+    "items_totales": 18,
+    "exactitud_media_vs_capa_texto_pct": 100.0,
+    "facturas_para_revision": 0,
+    "dpi": 300,
+    "motor": "Tesseract 5.3.4 (spa) --oem 1 --psm 3",
+    "revision": [],
+    "throughput_facturas_hora": 1091.0
+  },
+  "estado": "OK"
+}

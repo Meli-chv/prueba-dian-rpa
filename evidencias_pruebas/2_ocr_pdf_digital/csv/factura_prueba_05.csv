@@ -1,0 +1,5 @@
+﻿archivo,numero_factura,fecha_emision,nit_emisor,codigo,descripcion,cantidad,precio_unitario
+factura_prueba_05,FEV24166,2025-08-07,829550820,MAT-77,Cable UTP categoría 6 x 305 m,3.0,2466325.51
+factura_prueba_05,FEV24166,2025-08-07,829550820,SRV-1002,Mantenimiento preventivo de servidores en sitio con reporte,12.0,1928645.7
+factura_prueba_05,FEV24166,2025-08-07,829550820,SKU4520,Licencia anual de software de monitoreo,2.0,2798641.23
+factura_prueba_05,FEV24166,2025-08-07,829550820,CONS-15,Consultoría en automatización de procesos (horas),24.0,1980958.69

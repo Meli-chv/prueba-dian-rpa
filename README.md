@@ -39,12 +39,16 @@ cp .env.example .env                                   # poner DIAN_NIT y, si se
 ## Uso
 
 ```bash
+python main.py validar                  # valida el formato de los CUFE -> output/validacion_cufes.csv
 python main.py todo --nit 900XXXXXX     # RPA + OCR + resumen + métricas + aviso
 python main.py rpa  --nit 900XXXXXX     # solo Punto 1: descarga de los PDF
 python main.py ocr  --nit 900XXXXXX     # solo Punto 2: OCR de los PDF descargados
 ```
 
 > **El NIT es obligatorio**: el portal lo pide junto al CUFE (NIT del emisor o del receptor) y además es la contraseña del PDF que entrega la DIAN.
+>
+> **¿De dónde sale?** El enunciado no lo trae; para esta prueba lo entrega la empresa evaluadora. En operación real lo conoce quien consulta: el NIT propio (si es el receptor de las facturas) o el del proveedor (viene en el XML o en la orden de compra).
+> **Un NIT por CUFE**: `config/cufes.txt` acepta `CUFE,NIT` en cada línea, para facturas de emisores distintos. `--nit` / `DIAN_NIT` es el valor por defecto para las líneas sin NIT. La bitácora guarda el NIT de cada CUFE y el OCR lo usa para abrir ese PDF.
 
 Otras opciones: `--cufes archivo.txt`, `--pdfs carpeta`, `--salida carpeta`, `--sin-aviso`.
 Códigos de salida: `0` OK · `1` parcial (hay algo para revisar) · `2` falla. Sirven para que n8n, Zabbix o cron sepan cómo terminó sin leer el log.
@@ -69,10 +73,12 @@ El portal usa **Cloudflare Turnstile**. El widget está en un iframe dentro de u
 | Capa | Qué hace | Costo |
 |---|---|---|
 | 1. Automática | Espera a que Turnstile valide el navegador real. Si no lo hace, mueve el mouse de forma gradual y hace clic en la casilla (hasta 4 intentos). | Ninguno |
-| 2. Servicio | Toma la `sitekey` (del atributo o de la URL del iframe), la envía con la URL a una API compatible con 2Captcha (`CAPTCHA_API_KEY`) e inyecta el token. | ≈ USD 1–3 por 1000 |
+| 2. Servicio | Toma la `sitekey` (del atributo o de la URL del iframe) y la envía con la URL a **2Captcha** (método `turnstile`; también sirve otra API compatible, cambiando `CAPTCHA_API_BASE`). Escribe el token en `[name=cf-turnstile-response]` y ejecuta el `data-callback` del widget, igual que si lo hubiera resuelto el navegador. | ≈ USD 1–3 por 1000 |
 | 3. Persona | En ejecución interactiva, pide resolverlo en la ventana y el robot sigue solo apenas detecta el token. | Tiempo de una persona |
 
 La bitácora registra qué capa resolvió cada captcha y cuánto tardó (por ejemplo, `clic+no_requerido` = buscador por clic, detalle sin captcha).
+
+**Sobre términos de uso**: el captcha existe para limitar el tráfico automatizado. Por eso la capa 1 (navegador real, ritmo humano, pausas) y la capa 3 (persona) son las preferidas, y la capa 2 queda desactivada si no se configura. Para operación en volumen, lo correcto es usar fuentes oficiales: el XML de la factura que entrega el emisor, la consulta autenticada de documentos recibidos en el portal de la DIAN o un proveedor tecnológico autorizado.
 
 ## Punto 2 — OCR (`src/ocr_facturas.py`)
 
@@ -113,19 +119,38 @@ Flujo importable: **Schedule (L-V 6:00 a.m.) → Execute Command (`main.py todo`
 
 ## Métricas y tiempos
 
-Pruebas con 5 facturas ficticias con la estructura de la DIAN (18 ítems, 72 celdas de tabla). Equipo: 2 vCPU, sin GPU.
+Todas las cifras salen de archivos incluidos en `evidencias_pruebas/` (ver su `LEEME.md`). Son **datos ficticios o simulados**, rotulados como tales. Equipo: 2 vCPU, sin GPU.
 
-| Escenario | Tiempo por factura | OCR por página | Confianza media | Encabezado | Celdas de la tabla |
-|---|---|---|---|---|---|
-| PDF digital (como el que entrega la DIAN) | 3,1 s | 1,0 s | 89,7 | 100 % | 100 % (72/72) |
-| Escaneo simulado (200 dpi, ruido, JPEG 70 %, inclinación de 0,4°) | 4,6 s | 0,9 s | 88,5 | 100 % | 94 % (68/72) |
+**Calidad de extracción** (5 facturas, 18 ítems, 7 campos por fila; `tests/evaluar.py` → `metricas_calidad.json`):
 
-Desglose por factura digital: ~0,8 s de render y preprocesamiento, ~1,0 s de OCR y ~1,3 s de segundas lecturas de celdas (con `RELEER_CELDAS = False` baja a ~1,8 s, con menos exactitud en códigos).
+| Escenario | Precisión | Recall | F1 | Errores |
+|---|---|---|---|---|
+| PDF digital (como el que entrega la DIAN) | 100 % | 100 % | 1,000 | 0 de 126 celdas |
+| Escaneo simulado (200 dpi, ruido, JPEG 70 %, 0,4°) | 97,6 % | 96,8 % | 0,972 | 2 códigos y 2 precios; la factura afectada queda marcada para revisión |
 
-**RPA**: el cuello de botella es el captcha. Con la simulación local del portal, cada CUFE tarda de 20 a 30 s. Contra el portal real hay que sumar su latencia y la pausa de cortesía de 4 s. Estimación para los 10 CUFE: **3 a 8 minutos** con captcha automático, o más si se escala al servicio o a una persona. Los tiempos reales quedan en `bitacora_rpa.csv`.
+**Tiempos del OCR** (`metricas_ocr.csv`, `resumen_metricas.json`):
+
+| Escenario | Por factura | OCR por página | Confianza media | Throughput |
+|---|---|---|---|---|
+| PDF digital | 3,3 s | 1,2 s | 89,7 | ≈ 1.090 facturas/hora |
+| Escaneo simulado | 5,2 s | 1,1 s | 88,5 | ≈ 690 facturas/hora |
+
+Desglose por factura digital: 0,6 s de render y preprocesamiento, 1,2 s de OCR y 1,5 s de segundas lecturas de celdas (opcionales con `RELEER_CELDAS`).
+
+**RPA** (`bitacora_rpa.csv`, `resumen_ejecucion.json`):
+
+| Métrica | Simulación del portal (medido) | Portal real |
+|---|---|---|
+| Tiempo por CUFE | 21,2 s (20,8 s de captcha resuelto con clic) | Queda en `output/bitacora_rpa.csv` al ejecutar |
+| Tasa de reintento | 0 % | Ídem |
+| Throughput (incluye pausa de 4 s) | ≈ 143 CUFE/hora | Ídem |
+| Captcha por método | 2/2 por clic (capa 1) | Ídem |
+
+El cuello de botella del RPA es el captcha: no conviene paralelizar porque sube la tasa de captcha y el riesgo de bloqueo.
 
 ## Restricciones y limitaciones
 
+- **Métricas que limitan el proceso**: el RPA queda en ≈ 143 CUFE/hora por el captcha y la pausa de cortesía; el OCR en ≈ 1.090 facturas/hora en PDF digital (≈ 690 en escaneos) con una sola CPU. La calidad baja de F1 1,000 a 0,972 cuando el documento es un escaneo degradado.
 - **Captcha**: la capa 1 depende de que Cloudflare considere humano el navegador. En modo sin ventana (`HEADLESS=1`), en servidores o en IPs de nube casi siempre hace falta la capa 2 o la 3.
 - **NIT**: sin el NIT correcto el portal no devuelve el documento y el PDF no se puede abrir.
 - **Volumen**: consultas en secuencia y con pausa. Paralelizar sube la tasa de captcha y el riesgo de bloqueo de la IP.
@@ -133,12 +158,21 @@ Desglose por factura digital: ~0,8 s de render y preprocesamiento, ~1,0 s de OCR
 - **OCR**: pierde exactitud con escaneos de menos de 200 dpi, sellos o firmas sobre el texto y tablas sin bordes. El error típico son dígitos parecidos (`8/3`), que los umbrales de revisión detectan.
 - **CPU**: 1–1,5 s de OCR por página. Para miles de facturas: procesar en paralelo (`ProcessPoolExecutor`) o leer directamente la capa de texto o el XML de la factura.
 
+## Evidencia contra el portal real
+
+La simulación demuestra el flujo y las métricas, pero no reemplaza el portal. Para dejar evidencia real:
+
+1. `python main.py validar` y luego `python main.py todo --nit <NIT>`, con la ventana del navegador visible. Si Cloudflare insiste con el captcha, resolverlo a mano: es la capa 3 y queda registrada como `manual`.
+2. Subir al repositorio `output/` con `bitacora_rpa.csv`, `validacion_cufes.csv`, `pdfs/`, `csv/`, `metricas_ocr.csv`, `resumen_ejecucion.json`, `ejecucion.log` y `evidencias/` (el perfil del navegador está excluido en `.gitignore`).
+3. Si el portal bloquea o algún CUFE no existe, eso también es evidencia: la captura, el HTML y el estado (`captcha_fallido`, `no_encontrado`) quedan registrados.
+
 ## Pruebas
 
 ```bash
 python tests/generar_factura_muestra.py                     # 5 facturas ficticias + valores esperados
 python main.py ocr --pdfs tests/muestras --salida output_pruebas --sin-aviso
-python tests/evaluar.py output_pruebas                      # exactitud por campo
+python tests/evaluar.py output_pruebas                      # precisión, recall y F1 por campo
+python tests/test_validacion.py                             # el validador rechaza CUFE dañados
 HEADLESS=1 python tests/test_rpa_mock.py                    # RPA + desbloqueo con NIT + OCR contra una simulación del portal
 ```
 
@@ -155,7 +189,8 @@ La simulación imita el portal real: Turnstile en iframe que solo valida con cli
 │   ├── ocr_facturas.py           # desbloqueo → imagen → OCR → DataFrame → CSV + calidad
 │   └── observabilidad.py         # resumen, métricas Prometheus, avisos Teams/Slack
 ├── n8n/flujo_rpa_dian.json       # orquestación programada con alerta
-├── tests/                        # facturas de muestra, evaluación y simulación del portal
+├── tests/                        # facturas de muestra, evaluación, validación y simulación del portal
+├── evidencias_pruebas/           # salidas reales de las pruebas (datos ficticios/simulados, rotulados)
 ├── requirements.txt
 └── .env.example
 ```

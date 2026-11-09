@@ -1,5 +1,4 @@
 .env
 __pycache__/
-output/*
-!output/.gitkeep
+output/.perfil_navegador/
 .venv/

@@ -1,0 +1,4 @@
+﻿cufe,nit,estado,archivo,bytes,intentos,metodo_captcha,seg_captcha,seg_total,detalle
+eccc372e4bdb8125cf2e896b405ddb91918c7c6d92238892e3b36bd3b6a86929a3c47ed18ae8f559a1bf51b89ab560f1,900123456,descargado,/home/claude/prueba-dian-rpa/evidencias_pruebas/1_simulacion_portal/pdfs/eccc372e4bdb8125cf2e896b405ddb91918c7c6d92238892e3b36bd3b6a86929a3c47ed18ae8f559a1bf51b89ab560f1.pdf,4431,1,clic+no_requerido,20.84,21.24,
+000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000,900123456,no_encontrado,,0,1,clic+no_requerido,20.82,21.12,La DIAN no reporta el documento con ese CUFE/NIT
+no-es-un-cufe,900123456,cufe_invalido,,0,0,,0.0,0.0,No es un SHA-384 hexadecimal de 96 caracteres

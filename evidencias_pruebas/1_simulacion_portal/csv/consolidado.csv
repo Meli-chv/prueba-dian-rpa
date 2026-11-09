@@ -1,0 +1,4 @@
+﻿archivo,numero_factura,fecha_emision,nit_emisor,codigo,descripcion,cantidad,precio_unitario
+eccc372e4bdb8125cf2e896b405ddb91918c7c6d92238892e3b36bd3b6a86929a3c47ed18ae8f559a1bf51b89ab560f1,FEV16613,2025-09-11,868695681,SRV-1002,Mantenimiento preventivo de servidores en sitio con reporte,1.0,2174137.09
+eccc372e4bdb8125cf2e896b405ddb91918c7c6d92238892e3b36bd3b6a86929a3c47ed18ae8f559a1bf51b89ab560f1,FEV16613,2025-09-11,868695681,PRD-001,Servicio de soporte técnico mensual nivel 2 para infraestructura,10.0,4475473.36
+eccc372e4bdb8125cf2e896b405ddb91918c7c6d92238892e3b36bd3b6a86929a3c47ed18ae8f559a1bf51b89ab560f1,FEV16613,2025-09-11,868695681,HW-889,Disco SSD 1 TB empresarial,1.0,2934489.85

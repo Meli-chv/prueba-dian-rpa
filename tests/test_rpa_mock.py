@@ -83,16 +83,23 @@ if __name__ == "__main__":
         return ctx
 
     pw.BrowserType.launch_persistent_context = con_simulacion
-    cufes = [(RAIZ / "config/cufes.txt").read_text().split()[0], "0" * 96, "no-es-un-cufe"]
+    import observabilidad as obs
+    import time as _t
+    pares = [(rpa_dian.leer_cufes(RAIZ / "config/cufes.txt")[0][0], NIT), ("0" * 96, NIT), ("no-es-un-cufe", NIT)]
+    destino = Path(sys.argv[sys.argv.index("--conservar") + 1]) if "--conservar" in sys.argv else None
     with tempfile.TemporaryDirectory() as tmp:
-        salida = Path(tmp)
-        res = rpa_dian.ejecutar(cufes, NIT, salida, pausa_s=0)
+        salida = destino or Path(tmp)
+        inicio = _t.time()
+        res = rpa_dian.ejecutar(pares, salida, pausa_s=0)
         for r in res:
             print(f"{r.cufe[:16]:16s} {r.estado:14s} captcha={r.metodo_captcha:22s} {r.seg_total}s {r.bytes}B")
         assert [r.estado for r in res] == ["descargado", "no_encontrado", "cufe_invalido"], res
         assert res[0].metodo_captcha.startswith("clic"), res[0].metodo_captcha
 
-        df = ocr_facturas.ejecutar(salida / "pdfs", salida, NIT)       # PDF protegido -> OCR
+        df = ocr_facturas.ejecutar(salida / "pdfs", salida)   # NIT por CUFE desde la bitácora -> desbloqueo -> OCR
         assert len(df) > 0 and df["numero_factura"].notna().all()
         print(df[["numero_factura", "nit_emisor", "codigo", "cantidad", "precio_unitario"]].to_string(index=False))
+        resumen = obs.construir_resumen(res, salida, inicio)
+        obs.exportar_prometheus(resumen, salida)
+        print("Estado:", resumen["estado"], "| RPA:", {k: resumen["rpa"][k] for k in ("tasa_reintento", "throughput_cufes_hora", "captcha_por_metodo")})
     print("OK: RPA + desbloqueo con NIT + OCR validados contra la simulación")

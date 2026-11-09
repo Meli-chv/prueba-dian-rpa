@@ -1,0 +1,5 @@
+﻿archivo,numero_factura,fecha_emision,nit_emisor,codigo,descripcion,cantidad,precio_unitario
+factura_prueba_03,FEV36140,2025-09-22,817799708,MAT-77,Cable UTP categoría 6 x 305 m,1.0,3162897.05
+factura_prueba_03,FEV36140,2025-09-22,817799708,HW-889,Disco SSD 1 TB empresarial,1.0,3019301.27
+factura_prueba_03,FEV36140,2025-09-22,817799708,A-3301,Switch administrable 24 puertos,2.0,2266558.12
+factura_prueba_03,FEV36140,2025-09-22,817799708,CONS-15,Consultoría en automatización de procesos (horas),2.0,3264700.18

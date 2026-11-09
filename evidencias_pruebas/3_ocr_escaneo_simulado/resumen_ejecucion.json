@@ -1,0 +1,25 @@
+{
+  "fecha": "2026-11-08 22:06:33",
+  "duracion_seg": 26.7,
+  "ocr": {
+    "archivos": 5,
+    "procesados_ok": 5,
+    "tiempo_total_seg": 26.2,
+    "tiempo_promedio_por_factura_seg": 5.24,
+    "tiempo_promedio_ocr_por_pagina_seg": 1.07,
+    "confianza_media_ocr": 88.46,
+    "items_totales": 18,
+    "exactitud_media_vs_capa_texto_pct": null,
+    "facturas_para_revision": 1,
+    "dpi": 300,
+    "motor": "Tesseract 5.3.4 (spa) --oem 1 --psm 3",
+    "revision": [
+      {
+        "archivo": "factura_prueba_01.pd",
+        "motivo": "ítems con campos vacíos"
+      }
+    ],
+    "throughput_facturas_hora": 687.0
+  },
+  "estado": "PARCIAL"
+}

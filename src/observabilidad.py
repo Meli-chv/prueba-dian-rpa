@@ -33,6 +33,12 @@ def construir_resumen(rpa: list | None, salida: Path, inicio: float, incluir_ocr
             "cufes": len(rpa), "estados": estados,
             "seg_promedio_por_cufe": round(sum(x.seg_total for x in rpa) / len(rpa), 1) if rpa else 0,
             "seg_promedio_captcha": round(sum(x.seg_captcha for x in rpa) / len(rpa), 1) if rpa else 0,
+            # reintentos extra sobre los CUFE que se intentaron consultar (excluye inválidos)
+            "tasa_reintento": round(sum(max(x.intentos - 1, 0) for x in rpa) /
+                                    max(sum(1 for x in rpa if x.intentos), 1), 3),
+            "captcha_por_metodo": _contar(x.metodo_captcha for x in rpa if x.metodo_captcha),
+            "throughput_cufes_hora": round(3600 / (sum(x.seg_total for x in rpa if x.intentos) /
+                                                   max(sum(1 for x in rpa if x.intentos), 1) + 4), 1),
             "problemas": [{"cufe": x.cufe[:16] + "…", "estado": x.estado, "detalle": x.detalle}
                           for x in rpa if x.estado != "descargado"],
         }
@@ -46,9 +52,18 @@ def construir_resumen(rpa: list | None, salida: Path, inicio: float, incluir_ocr
             if "requiere_revision" in m:
                 r["ocr"]["revision"] = [{"archivo": a[:20], "motivo": mo}
                                         for a, mo in zip(m["archivo"], m["requiere_revision"]) if mo]
+    if r.get("ocr", {}).get("tiempo_promedio_por_factura_seg"):
+        r["ocr"]["throughput_facturas_hora"] = round(3600 / r["ocr"]["tiempo_promedio_por_factura_seg"], 0)
     r["estado"] = estado_global(r)
     (salida / "resumen_ejecucion.json").write_text(json.dumps(r, indent=2, ensure_ascii=False), encoding="utf-8")
     return r
+
+
+def _contar(valores) -> dict:
+    c: dict = {}
+    for v in valores:
+        c[v] = c.get(v, 0) + 1
+    return c
 
 
 def estado_global(r: dict) -> str:
@@ -75,6 +90,8 @@ def exportar_prometheus(r: dict, salida: Path) -> Path:
     if "rpa" in r:
         L += ["# TYPE dian_rpa_captcha_seg_promedio gauge",
               f'dian_rpa_captcha_seg_promedio {r["rpa"]["seg_promedio_captcha"]}',
+              "# TYPE dian_rpa_tasa_reintento gauge",
+              f'dian_rpa_tasa_reintento {r["rpa"]["tasa_reintento"]}',
               "# TYPE dian_rpa_cufe_seg_promedio gauge",
               f'dian_rpa_cufe_seg_promedio {r["rpa"]["seg_promedio_por_cufe"]}']
     o = r.get("ocr", {})
@@ -82,6 +99,7 @@ def exportar_prometheus(r: dict, salida: Path) -> Path:
                       ("confianza_media_ocr", "dian_ocr_confianza_media"),
                       ("exactitud_media_vs_capa_texto_pct", "dian_ocr_exactitud_pct"),
                       ("items_totales", "dian_ocr_items_total"),
+                      ("throughput_facturas_hora", "dian_ocr_throughput_facturas_hora"),
                       ("facturas_para_revision", "dian_ocr_facturas_revision")):
         if o.get(k) is not None:
             L += [f"# TYPE {nombre} gauge", f"{nombre} {o[k]}"]

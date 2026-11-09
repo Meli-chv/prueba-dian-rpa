@@ -1,0 +1,2 @@
+﻿archivo,paginas,seg_render,seg_ocr,seg_parseo,seg_total,inclinacion_corregida_grados,palabras_ocr,confianza_media,pct_palabras_conf_bajo_60,campos_encabezado_ok,items_extraidos,items_con_vacios,exactitud_vs_capa_texto_pct,requiere_revision,estado
+eccc372e4bdb8125cf2e896b405ddb91918c7c6d92238892e3b36bd3b6a86929a3c47ed18ae8f559a1bf51b89ab560f1.pdf,1,1.083,1.822,1.501,4.518,0.0,178,90.06,5.62,3,3,0,100.0,,ok

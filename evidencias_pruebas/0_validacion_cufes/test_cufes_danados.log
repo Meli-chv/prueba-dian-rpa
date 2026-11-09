@@ -1,0 +1,7 @@
+CUFE #11 inválido: longitud=96, caracteres no hex='r'
+CUFE #12 inválido: longitud=97, caracteres no hex=' '
+CUFE #13 inválido: longitud=95, caracteres no hex=''
+rechazado con letra r (no hex)     longitud=96 caracteres_invalidos='r'
+rechazado con espacio interno      longitud=97 caracteres_invalidos=' '
+rechazado de 95 caracteres         longitud=95 caracteres_invalidos=''
+OK: 10/10 CUFE de la prueba válidos; 3/3 CUFE dañados rechazados

@@ -1,0 +1,4 @@
+﻿archivo,numero_factura,fecha_emision,nit_emisor,codigo,descripcion,cantidad,precio_unitario
+factura_prueba_01,FEV16613,2025-09-11,868695681,SRV-1002,Mantenimiento preventivo de servidores en sitio con reporte,1.0,2174137.09
+factura_prueba_01,FEV16613,2025-09-11,868695681,PRD-001,Servicio de soporte técnico mensual nivel 2 para infraestructura,10.0,
+factura_prueba_01,FEV16613,2025-09-11,868695681,HW-889,Disco SSD 1 TB empresarial,1.0,2934489.85

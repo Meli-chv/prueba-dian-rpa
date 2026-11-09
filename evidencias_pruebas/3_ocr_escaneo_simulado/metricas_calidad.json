@@ -1,0 +1,68 @@
+{
+  "numero_factura": {
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0,
+    "tp": 18,
+    "fp": 0,
+    "fn": 0
+  },
+  "fecha_emision": {
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0,
+    "tp": 18,
+    "fp": 0,
+    "fn": 0
+  },
+  "nit_emisor": {
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0,
+    "tp": 18,
+    "fp": 0,
+    "fn": 0
+  },
+  "codigo": {
+    "precision": 0.8889,
+    "recall": 0.8889,
+    "f1": 0.8889,
+    "tp": 16,
+    "fp": 2,
+    "fn": 2
+  },
+  "descripcion": {
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0,
+    "tp": 18,
+    "fp": 0,
+    "fn": 0
+  },
+  "cantidad": {
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0,
+    "tp": 18,
+    "fp": 0,
+    "fn": 0
+  },
+  "precio_unitario": {
+    "precision": 0.9412,
+    "recall": 0.8889,
+    "f1": 0.9143,
+    "tp": 16,
+    "fp": 1,
+    "fn": 2
+  },
+  "global": {
+    "precision": 0.976,
+    "recall": 0.9683,
+    "f1": 0.9721,
+    "tp": 122,
+    "fp": 3,
+    "fn": 4,
+    "items_esperados": 18,
+    "items_extraidos": 18
+  }
+}

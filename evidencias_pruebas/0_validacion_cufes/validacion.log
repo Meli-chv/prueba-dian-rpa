@@ -1,0 +1,11 @@
+2026-11-08 22:05:48,558 INFO    rpa | Validación de CUFE: 10/10 con formato válido (SHA-384, 96 hex)
+2026-11-08 22:05:48,558 INFO    root | CUFE #1  longitud=96 solo_hex=True nit=no -> VÁLIDO
+2026-11-08 22:05:48,558 INFO    root | CUFE #2  longitud=96 solo_hex=True nit=no -> VÁLIDO
+2026-11-08 22:05:48,558 INFO    root | CUFE #3  longitud=96 solo_hex=True nit=no -> VÁLIDO
+2026-11-08 22:05:48,558 INFO    root | CUFE #4  longitud=96 solo_hex=True nit=no -> VÁLIDO
+2026-11-08 22:05:48,558 INFO    root | CUFE #5  longitud=96 solo_hex=True nit=no -> VÁLIDO
+2026-11-08 22:05:48,558 INFO    root | CUFE #6  longitud=96 solo_hex=True nit=no -> VÁLIDO
+2026-11-08 22:05:48,558 INFO    root | CUFE #7  longitud=96 solo_hex=True nit=no -> VÁLIDO
+2026-11-08 22:05:48,558 INFO    root | CUFE #8  longitud=96 solo_hex=True nit=no -> VÁLIDO
+2026-11-08 22:05:48,558 INFO    root | CUFE #9  longitud=96 solo_hex=True nit=no -> VÁLIDO
+2026-11-08 22:05:48,558 INFO    root | CUFE #10 longitud=96 solo_hex=True nit=no -> VÁLIDO

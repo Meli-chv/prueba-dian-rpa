@@ -1,0 +1,5 @@
+﻿archivo,numero_factura,fecha_emision,nit_emisor,codigo,descripcion,cantidad,precio_unitario
+factura_prueba_02,FEV27056,2025-02-08,883359230,A-3301,Switch administrable 24 puertos,1.0,2985453.46
+factura_prueba_02,FEV27056,2025-02-08,883359230,HW-889,Disco SSD 1 TB empresarial,3.0,2674501.84
+factura_prueba_02,FEV27056,2025-02-08,883359230,CONS-15,Consultoría en automatización de procesos (horas),10.0,3512693.79
+factura_prueba_02,FEV27056,2025-02-08,883359230,SKU4520,Licencia anual de software de monitoreo,10.0,1425140.07

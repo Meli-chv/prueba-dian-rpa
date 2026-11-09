@@ -499,11 +499,22 @@ def procesar_pdf(pdf: Path, dir_img: Path, dir_csv: Path, nit: str = "") -> tupl
     return df, m
 
 
+def nits_por_cufe(bitacora: Path) -> dict:
+    """Cada PDF se llama <CUFE>.pdf; su contraseña es el NIT con que se consultó."""
+    if not bitacora.exists():
+        return {}
+    b = pd.read_csv(bitacora, dtype=str).fillna("")
+    return dict(zip(b["cufe"], b["nit"])) if "nit" in b else {}
+
+
 def ejecutar(dir_pdf: Path, salida: Path, nit: str = "") -> pd.DataFrame:
+    """Procesa cada PDF por separado: un DataFrame por archivo (-> <archivo>.csv) y al
+    final los concatena en consolidado.csv."""
     dir_img, dir_csv = salida / "imagenes", salida / "csv"
     dir_img.mkdir(parents=True, exist_ok=True)
     dir_csv.mkdir(parents=True, exist_ok=True)
     pdfs = sorted(dir_pdf.glob("*.pdf"))
+    nits = nits_por_cufe(salida / "bitacora_rpa.csv")
     if not pdfs:
         raise SystemExit(f"No hay PDFs en {dir_pdf}")
 
@@ -511,7 +522,7 @@ def ejecutar(dir_pdf: Path, salida: Path, nit: str = "") -> pd.DataFrame:
     dfs, metricas = [], []
     for pdf in pdfs:
         try:
-            df, m = procesar_pdf(pdf, dir_img, dir_csv, nit)
+            df, m = procesar_pdf(pdf, dir_img, dir_csv, nits.get(pdf.stem) or nit)
             m["estado"] = "ok"
             dfs.append(df)
         except Exception as e:

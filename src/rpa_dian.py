@@ -49,6 +49,7 @@ TEXTOS_NO_ENCONTRADO = ("no se encontraron resultados", "no se encontró", "docu
 @dataclass
 class ResultadoConsulta:
     cufe: str
+    nit: str = ""
     estado: str = "pendiente"   # descargado | no_encontrado | captcha_fallido | error | cufe_invalido
     archivo: str = ""
     bytes: int = 0
@@ -105,7 +106,7 @@ def _descargar_pdf(page: Page, ctx: BrowserContext, destino: Path) -> int:
 
 def consultar_cufe(page: Page, ctx: BrowserContext, cufe: str, nit: str, carpeta_pdf: Path,
                    carpeta_evid: Path, max_intentos: int = 3) -> ResultadoConsulta:
-    res = ResultadoConsulta(cufe=cufe)
+    res = ResultadoConsulta(cufe=cufe, nit=nit)
     t0 = time.perf_counter()
     if not CUFE_RE.match(cufe):
         res.estado, res.detalle = "cufe_invalido", "No es un SHA-384 hexadecimal de 96 caracteres"
@@ -159,11 +160,46 @@ def consultar_cufe(page: Page, ctx: BrowserContext, cufe: str, nit: str, carpeta
     return res
 
 
-def ejecutar(cufes: list[str], nit: str, salida: Path, pausa_s: float = 4.0) -> list[ResultadoConsulta]:
+def leer_cufes(ruta: Path, nit_general: str = "") -> list[tuple[str, str]]:
+    """Lee config/cufes.txt. Cada línea: CUFE, o CUFE y NIT separados por coma,
+    punto y coma, tabulador o espacio. Si la línea no trae NIT se usa el general."""
+    pares = []
+    for linea in ruta.read_text(encoding="utf-8").splitlines():
+        linea = linea.split("#")[0].strip()
+        if not linea:
+            continue
+        partes = re.split(r"[,;\t ]+", linea)
+        pares.append((partes[0].strip().lower(), (partes[1] if len(partes) > 1 else nit_general).strip()))
+    return pares
+
+
+def validar_cufes(pares: list[tuple[str, str]], salida: Path) -> list[dict]:
+    """Valida formato (SHA-384 = 96 caracteres hexadecimales) y deja evidencia en CSV."""
+    filas = []
+    for i, (cufe, nit) in enumerate(pares, 1):
+        no_hex = sorted(set(re.sub(r"[0-9a-f]", "", cufe)))
+        filas.append({"n": i, "cufe": cufe, "longitud": len(cufe), "solo_hex": not no_hex,
+                      "caracteres_invalidos": "".join(no_hex), "tiene_nit": bool(nit),
+                      "valido": bool(CUFE_RE.match(cufe))})
+    salida.mkdir(parents=True, exist_ok=True)
+    with (salida / "validacion_cufes.csv").open("w", newline="", encoding="utf-8-sig") as f:
+        w = csv.DictWriter(f, fieldnames=list(filas[0].keys()))
+        w.writeheader()
+        w.writerows(filas)
+    ok = sum(x["valido"] for x in filas)
+    log.info("Validación de CUFE: %d/%d con formato válido (SHA-384, 96 hex)", ok, len(filas))
+    for x in filas:
+        if not x["valido"]:
+            log.warning("CUFE #%d inválido: longitud=%d, caracteres no hex=%r", x["n"], x["longitud"], x["caracteres_invalidos"])
+    return filas
+
+
+def ejecutar(pares: list[tuple[str, str]], salida: Path, pausa_s: float = 4.0) -> list[ResultadoConsulta]:
     carpeta_pdf, carpeta_evid = salida / "pdfs", salida / "evidencias"
     carpeta_pdf.mkdir(parents=True, exist_ok=True)
-    if not nit:
-        log.warning("Sin NIT: el portal exige el NIT del emisor o receptor junto al CUFE (usa --nit o DIAN_NIT)")
+    validar_cufes(pares, salida)
+    if any(not nit for _, nit in pares):
+        log.warning("Hay CUFE sin NIT: el portal exige el NIT del emisor o receptor (usa CUFE,NIT en el archivo, --nit o DIAN_NIT)")
     resultados: list[ResultadoConsulta] = []
 
     with sync_playwright() as p:
@@ -175,12 +211,12 @@ def ejecutar(cufes: list[str], nit: str, salida: Path, pausa_s: float = 4.0) -> 
             args=["--disable-blink-features=AutomationControlled"],
         )
         page = ctx.pages[0] if ctx.pages else ctx.new_page()
-        for i, cufe in enumerate(cufes, 1):
-            log.info("[%d/%d] Consultando CUFE %s…", i, len(cufes), cufe[:16])
-            r = consultar_cufe(page, ctx, cufe.strip().lower(), nit, carpeta_pdf, carpeta_evid)
-            log.info("  -> %s (%ss, captcha=%s)", r.estado, r.seg_total, r.metodo_captcha)
+        for i, (cufe, nit) in enumerate(pares, 1):
+            log.info("[%d/%d] Consultando CUFE %s…", i, len(pares), cufe[:16])
+            r = consultar_cufe(page, ctx, cufe, nit, carpeta_pdf, carpeta_evid)
+            log.info("  -> %s (%ss, captcha=%s, intentos=%d)", r.estado, r.seg_total, r.metodo_captcha, r.intentos)
             resultados.append(r)
-            if i < len(cufes):
+            if i < len(pares):
                 time.sleep(pausa_s)   # cortesía con el servicio público
         ctx.close()
 

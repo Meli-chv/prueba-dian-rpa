@@ -1,0 +1,10 @@
+Ítems esperados: 18 | extraídos: 18
+campo            precisión  recall     F1
+numero_factura      100.0%  100.0%  1.000
+fecha_emision       100.0%  100.0%  1.000
+nit_emisor          100.0%  100.0%  1.000
+codigo              100.0%  100.0%  1.000
+descripcion         100.0%  100.0%  1.000
+cantidad            100.0%  100.0%  1.000
+precio_unitario     100.0%  100.0%  1.000
+GLOBAL              100.0%  100.0%  1.000

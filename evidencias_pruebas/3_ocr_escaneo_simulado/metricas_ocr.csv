@@ -1,0 +1,6 @@
+﻿archivo,paginas,seg_render,seg_ocr,seg_parseo,seg_total,inclinacion_corregida_grados,palabras_ocr,confianza_media,pct_palabras_conf_bajo_60,campos_encabezado_ok,items_extraidos,items_con_vacios,exactitud_vs_capa_texto_pct,requiere_revision,estado
+factura_prueba_01.pdf,1,2.746,1.068,1.141,4.959,-0.39,174,87.87,8.05,3,3,1,,ítems con campos vacíos,ok
+factura_prueba_02.pdf,1,2.761,1.114,1.497,5.374,-0.39,188,88.58,6.91,3,4,0,,,ok
+factura_prueba_03.pdf,1,2.853,1.103,1.63,5.588,-0.39,193,88.76,6.74,3,4,0,,,ok
+factura_prueba_04.pdf,1,2.919,1.026,1.235,5.182,-0.39,171,88.81,7.02,3,3,0,,,ok
+factura_prueba_05.pdf,1,2.669,1.059,1.357,5.087,-0.4,192,88.29,8.85,3,4,0,,,ok
