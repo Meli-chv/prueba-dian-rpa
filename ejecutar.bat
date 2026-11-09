@@ -11,7 +11,7 @@ if exist "C:\Program Files\Tesseract-OCR" set "PATH=%PATH%;C:\Program Files\Tess
 if not exist ".env" (
   echo El portal de la DIAN pide un NIT junto a cada CUFE ^(tambien es la clave del PDF^).
   set /p NIT="Escribe el NIT y presiona Enter: "
-  call powershell -NoProfile -Command "(Get-Content .env.example) -replace '^DIAN_NIT=$','DIAN_NIT=%%NIT%%' | Set-Content .env"
+  call powershell -NoProfile -Command "(Get-Content .env.example) -replace '^DIAN_NIT=$',('DIAN_NIT=' + $env:NIT) | Set-Content .env"
 )
 for /f "tokens=2 delims==" %%a in ('findstr /b "DIAN_NIT=" .env') do set "NIT_ACTUAL=%%a"
 echo NIT configurado: %NIT_ACTUAL%
