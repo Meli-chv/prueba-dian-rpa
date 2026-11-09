@@ -3,3 +3,9 @@ __pycache__/
 output/.perfil_navegador/
 .venv/
 output/.perfil_chrome/
+# Las facturas reales contienen datos personales y de salud (Ley 1581 de 2012):
+# no se publican en el repositorio. Sí se publican bitácora, validación y métricas.
+output/pdfs/
+output/imagenes/
+output/csv/
+output/evidencias/
