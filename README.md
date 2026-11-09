@@ -38,6 +38,8 @@ cp .env.example .env                                   # poner DIAN_NIT y, si se
 
 ## Uso
 
+**En Windows, la forma más fácil:** doble clic en `ejecutar.bat`. La primera vez prepara el entorno; después valida los CUFE, corre el RPA y el OCR, y abre la carpeta `output`. El NIT se toma de `.env` (`DIAN_NIT`).
+
 ```bash
 python main.py validar                  # valida el formato de los CUFE -> output/validacion_cufes.csv
 python main.py todo --nit 900XXXXXX     # RPA + OCR + resumen + métricas + aviso
