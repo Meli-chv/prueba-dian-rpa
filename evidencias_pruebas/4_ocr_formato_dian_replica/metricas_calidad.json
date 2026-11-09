@@ -27,17 +27,17 @@
     "precision": 1.0,
     "recall": 1.0,
     "f1": 1.0,
-    "tp": 8,
+    "tp": 10,
     "fp": 0,
     "fn": 0
   },
   "descripcion": {
-    "precision": 1.0,
-    "recall": 1.0,
-    "f1": 1.0,
-    "tp": 12,
-    "fp": 0,
-    "fn": 0
+    "precision": 0.8333,
+    "recall": 0.8333,
+    "f1": 0.8333,
+    "tp": 10,
+    "fp": 2,
+    "fn": 2
   },
   "cantidad": {
     "precision": 1.0,
@@ -56,12 +56,12 @@
     "fn": 0
   },
   "global": {
-    "precision": 1.0,
-    "recall": 1.0,
-    "f1": 1.0,
+    "precision": 0.9756,
+    "recall": 0.9756,
+    "f1": 0.9756,
     "tp": 80,
-    "fp": 0,
-    "fn": 0,
+    "fp": 2,
+    "fn": 2,
     "items_esperados": 12,
     "items_extraidos": 12
   }

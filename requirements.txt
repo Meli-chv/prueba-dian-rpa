@@ -7,4 +7,5 @@ pytesseract>=0.3.10
 opencv-python-headless>=4.9
 numpy>=1.26
 pandas>=2.2
+wordfreq>=3.0      # diccionario para unir palabras que la DIAN parte entre renglones
 reportlab>=4.0   # solo para generar facturas de prueba (tests/)

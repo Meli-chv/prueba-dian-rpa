@@ -20,6 +20,9 @@ from reportlab.platypus import PageBreak, Paragraph, SimpleDocTemplate, Spacer, 
 OUT = Path(__file__).parent / "muestras_formato_dian"
 VERDE, VERDE_CLARO = colors.HexColor("#86E5BE"), colors.HexColor("#C8F3E1")
 SERVICIOS = [
+    ("938662", "REHABILITACION FUNCIONAL DE LA DEFICIENCIA DISCAPACIDAD DEFINITIVA SEVERA"),
+    ("911015", "CPN HEMOCLASIFICACION"),
+    ("902207", "CPN HEMOGRAMA I (HEMOGLOBINA HEMATOCRITO Y LEUCOGRAMA) MANUAL"),
     ("", "Consulta De Primera Vez Por Medicina General"),
     ("85121701", "CONSULTA DE PRIMERA VEZ POR TRABAJO SOCIAL"),
     ("85121701", "VALORACION POR PSICOLOGO"),
@@ -33,6 +36,20 @@ st_lab = ParagraphStyle("lab", fontName="Helvetica", fontSize=7.2, leading=10)
 st_sec = ParagraphStyle("sec", fontName="Helvetica-Bold", fontSize=9.5, textColor=colors.HexColor("#555555"), leftIndent=14 * mm)
 st_celda = ParagraphStyle("c", fontName="Helvetica", fontSize=5.6, leading=7, alignment=1)
 st_enc = ParagraphStyle("e", fontName="Helvetica-Bold", fontSize=5.6, leading=7, alignment=1)
+
+
+def cortar_como_dian(texto, ancho_mm, fuente="Helvetica", tam=5.6):
+    """La DIAN parte el texto de la celda por caracteres, aunque quede a mitad de palabra."""
+    from reportlab.pdfbase.pdfmetrics import stringWidth
+    lineas, actual = [], ""
+    for ch in texto:
+        if stringWidth(actual + ch, fuente, tam) > ancho_mm * mm - 3:
+            lineas.append(actual)
+            actual = ch
+        else:
+            actual += ch
+    lineas.append(actual)
+    return "<br/>".join(l.strip() for l in lineas)
 
 
 def cop(v):
@@ -98,7 +115,7 @@ def factura(i, rnd):
     for n, (cod, desc) in enumerate(rnd.sample(SERVICIOS, rnd.randint(1, 4)), 1):
         cant = float(rnd.choice([1, 1, 1, 2, 3]))
         pu = float(rnd.choice([21800, 28800, 52000, 9500, 135000, 7850.5]))
-        data.append([Paragraph(str(n), st_celda), Paragraph(cod, st_celda), Paragraph(desc, st_celda), Paragraph("94", st_celda),
+        data.append([Paragraph(str(n), st_celda), Paragraph(cod, st_celda), Paragraph(cortar_como_dian(desc, 26), st_celda), Paragraph("94", st_celda),
                      Paragraph(cop(cant), st_celda), precio(pu), precio(0), precio(0), "", "", "", "", precio(pu)])
         esperado.append(dict(archivo=f"dian_formato_{i:02d}", numero_factura=numero,
                              fecha_emision="-".join(reversed(fecha.split("/"))), nit_emisor=nit,

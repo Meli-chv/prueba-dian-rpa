@@ -1,3 +1,3 @@
 ﻿archivo,numero_factura,fecha_emision,nit_emisor,codigo,descripcion,cantidad,precio_unitario
-dian_formato_04,FEHP-427393,2024-07-18,879999822,,Terapia fisica integral,1.0,135000.0
-dian_formato_04,FEHP-427393,2024-07-18,879999822,890201,Consulta de control por enfermeria,3.0,52000.0
+dian_formato_04,FEHP-427393,2024-07-18,879999822,903841,GLUCOSA EN SUERO U OTRO FLUIDO,3.0,7850.5
+dian_formato_04,FEHP-427393,2024-07-18,879999822,911015,CPN HEMOCLASIFICACION,3.0,52000.0

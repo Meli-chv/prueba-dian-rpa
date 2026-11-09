@@ -47,7 +47,7 @@ WL_CODIGO = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_./"
 WL_NUMERO = "0123456789.,"
 UMBRAL_CONFIANZA = 80      # confianza media de Tesseract por debajo de esto -> revisión
 UMBRAL_EXACTITUD = 95      # % de coincidencia con la capa de texto por debajo de esto -> revisión
-FIN_TABLA = ("descuentos y recargos", "hoja ", "notas", "datos totales", "subtotal", "total bruto", "valor total",
+FIN_TABLA = ("descuentos y recargos", "referencia", "hoja ", "notas", "datos totales", "subtotal", "total bruto", "valor total",
              "moneda", "total factura", "observaciones", "informacion adicional")
 
 
@@ -58,6 +58,52 @@ def norm(s: str) -> str:
     """minúsculas sin tildes, para comparar etiquetas sin depender del OCR de acentos."""
     s = unicodedata.normalize("NFKD", s)
     return "".join(c for c in s if not unicodedata.combining(c)).lower()
+
+
+_VOCAB: dict | None = None
+
+
+def _vocabulario() -> dict:
+    """Frecuencia (escala Zipf) de palabras en español, sin tildes. Usa wordfreq si está."""
+    global _VOCAB
+    if _VOCAB is None:
+        _VOCAB = {}
+        try:
+            from wordfreq import iter_wordlist, zipf_frequency
+            for w in iter_wordlist("es"):
+                k = norm(w)
+                if k.isalpha() and k not in _VOCAB:
+                    _VOCAB[k] = zipf_frequency(w, "es")
+        except ImportError:
+            log.warning("wordfreq no está instalado: no se unirán palabras partidas entre renglones")
+    return _VOCAB
+
+
+def _debe_unir(a: str, b: str) -> bool:
+    """¿El salto de renglón entre a y b partió una palabra? La DIAN corta el texto de la
+    celda por caracteres ("FUNCIO|NAL", "V|EZ", "PSICOL|OGO")."""
+    va, vb = re.sub(r"\W", "", norm(a)), re.sub(r"\W", "", norm(b))
+    if not va or not vb or not (va.isalpha() and vb.isalpha()):
+        return False
+    voc = _vocabulario()
+    if not voc:
+        return False
+    if len(vb) == 1 and vb not in ("y", "o", "a", "e", "u"):
+        return True                                     # "HEMOCLASIFICACIO|N"
+    f = lambda w: voc.get(w, 0.0)
+    fab = f(va + vb)
+    return fab >= 1.5 and fab > min(f(va), f(vb))       # la palabra unida es más común que el pedazo raro
+
+
+def unir_renglones(lineas: list[str]) -> str:
+    lineas = [l.strip() for l in lineas if l and l.strip()]
+    if not lineas:
+        return ""
+    texto = lineas[0]
+    for sig in lineas[1:]:
+        a, b = texto.split()[-1], sig.split()[0]
+        texto = texto + sig if _debe_unir(a, b) else texto + " " + sig
+    return texto
 
 
 def a_numero(txt: str) -> float | None:
@@ -337,7 +383,7 @@ def releer_descripcion(img_bin: np.ndarray, x0: int, y0: int, x1: int, y1: int) 
     celda = cv2.resize(celda, None, fx=2, fy=2, interpolation=cv2.INTER_CUBIC)
     celda = cv2.copyMakeBorder(celda, 20, 20, 20, 20, cv2.BORDER_CONSTANT, value=255)
     txt = pytesseract.image_to_string(celda, lang="spa", config="--oem 1 --psm 6")
-    return re.sub(r"\s+", " ", txt).strip(" |_")
+    return "\n".join(l.strip(" |_") for l in txt.splitlines() if l.strip(" |_"))
 
 
 def extraer_tabla(filas: list[list[Palabra]], img_bin: np.ndarray | None,
@@ -406,9 +452,11 @@ def extraer_tabla(filas: list[list[Palabra]], img_bin: np.ndarray | None,
             break
 
         def texto(j):
-            ps = [p for r in agrupar_filas(celdas.get(j, [])) for p in r]   # renglones de la celda, en orden
-            return " ".join(p.texto for p in ps if not re.fullmatch(r"[.,;:'`´~\-]", p.texto)
-                            and not (len(p.texto) == 1 and p.texto.islower() and p.conf < 60)).strip()
+            renglones = []
+            for r in agrupar_filas(celdas.get(j, [])):                       # renglones de la celda, en orden
+                renglones.append(" ".join(p.texto for p in r if not re.fullmatch(r"[.,;:'`´~\-]", p.texto)
+                                          and not (len(p.texto) == 1 and p.texto.islower() and p.conf < 60)))
+            return unir_renglones(renglones) if j == c["des"] else " ".join(renglones).strip()
 
         if limpia is not None:
             for cj, wl in ((c["cod"], WL_CODIGO), (c["can"], WL_NUMERO), (c["pre"], WL_NUMERO)):
@@ -426,13 +474,15 @@ def extraer_tabla(filas: list[list[Palabra]], img_bin: np.ndarray | None,
             a, b = intervalos[c["des"]]
             r = releer_descripcion(limpia, int(a) + 2, int(ya) + 2, int(b) - 2, int(yb) - 2)
             actual = " ".join(p.texto for p in celdas[c["des"]])
-            if r and len(r.split()) >= len(actual.split()) and len(r) >= 0.8 * len(actual):
-                celdas[c["des"]] = [Palabra(w, a + k, ya, a + k + 1, ya + 1, 100) for k, w in enumerate(r.split())]
+            if r and len(r.split()) >= len(actual.split()) and len(r.replace("\n", " ")) >= 0.8 * len(actual):
+                # un Palabra por palabra, con un "y" distinto por renglón para conservar los saltos
+                celdas[c["des"]] = [Palabra(w, a + k, ya + n * alto * 3, a + k + 1, ya + n * alto * 3 + alto, 100)
+                                    for n, linea in enumerate(r.splitlines()) for k, w in enumerate(linea.split())]
 
         item = {"codigo": texto(c["cod"]), "descripcion": texto(c["des"]),
                 "cantidad": a_numero(texto(c["can"])), "precio_unitario": a_numero(texto(c["pre"]))}
-        if item["descripcion"] or item["cantidad"] is not None or item["precio_unitario"] is not None:
-            items.append(item)
+        if item["cantidad"] is not None or item["precio_unitario"] is not None:
+            items.append(item)                       # una fila de producto siempre trae cantidad o precio
     return items
 
 

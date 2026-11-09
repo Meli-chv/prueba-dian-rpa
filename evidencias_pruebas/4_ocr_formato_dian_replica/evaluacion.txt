@@ -4,7 +4,7 @@ numero_factura      100.0%  100.0%  1.000
 fecha_emision       100.0%  100.0%  1.000
 nit_emisor          100.0%  100.0%  1.000
 codigo              100.0%  100.0%  1.000
-descripcion         100.0%  100.0%  1.000
+descripcion          83.3%   83.3%  0.833
 cantidad            100.0%  100.0%  1.000
 precio_unitario     100.0%  100.0%  1.000
-GLOBAL              100.0%  100.0%  1.000
+GLOBAL               97.6%   97.6%  0.976
