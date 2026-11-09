@@ -1,0 +1,7 @@
+﻿archivo,paginas,seg_render,seg_ocr,seg_parseo,seg_total,inclinacion_corregida_grados,palabras_ocr,confianza_media,pct_palabras_conf_bajo_60,campos_encabezado_ok,items_extraidos,items_con_vacios,exactitud_vs_capa_texto_pct,requiere_revision,estado
+dian_formato_01.pdf,2,0.866,1.755,0.858,3.556,0.0,227,92.75,2.64,3,1,0,100.0,,ok
+dian_formato_02.pdf,2,0.847,1.892,0.908,3.734,0.0,224,93.34,1.79,3,1,0,100.0,,ok
+dian_formato_03.pdf,2,1.098,1.757,0.756,3.698,0.0,223,93.87,1.35,3,1,0,100.0,,ok
+dian_formato_04.pdf,2,0.867,1.653,1.086,3.684,0.0,235,93.91,1.7,3,2,0,100.0,,ok
+dian_formato_05.pdf,2,0.939,2.073,2.014,5.112,0.0,281,92.41,1.78,3,4,0,100.0,,ok
+dian_formato_06.pdf,2,1.028,1.969,1.872,4.961,0.0,262,93.91,0.76,3,3,0,100.0,,ok

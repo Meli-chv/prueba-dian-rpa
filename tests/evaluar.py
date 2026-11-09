@@ -6,7 +6,7 @@ precisión, recall y F1 por campo y global, y conteo de ítems.
   FP = celda extraída pero incorrecta (o ítem que sobra)
   FN = celda esperada que no se extrajo o quedó incorrecta
 
-    python tests/evaluar.py <carpeta_salida>   -> imprime y guarda <carpeta_salida>/metricas_calidad.json
+    python tests/evaluar.py <carpeta_salida> [esperado.csv]   -> imprime y guarda <carpeta_salida>/metricas_calidad.json
 """
 import json
 import sys
@@ -15,7 +15,7 @@ from pathlib import Path
 import pandas as pd
 
 salida = Path(sys.argv[1] if len(sys.argv) > 1 else "output_pruebas")
-esp = pd.read_csv(Path(__file__).parent / "muestras" / "esperado.csv", dtype=str)
+esp = pd.read_csv(Path(sys.argv[2]) if len(sys.argv) > 2 else Path(__file__).parent / "muestras" / "esperado.csv", dtype=str)
 got = pd.read_csv(salida / "csv" / "consolidado.csv", dtype=str)
 esp["n"] = esp.groupby("archivo").cumcount()
 got["n"] = got.groupby("archivo").cumcount()

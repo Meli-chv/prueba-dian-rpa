@@ -1,0 +1,5 @@
+﻿archivo,numero_factura,fecha_emision,nit_emisor,codigo,descripcion,cantidad,precio_unitario
+dian_formato_05,FEV-999964,2024-12-20,881341051,990211,Educacion grupal en salud por higiene oral,1.0,135000.0
+dian_formato_05,FEV-999964,2024-12-20,881341051,890201,Consulta de control por enfermeria,3.0,9500.0
+dian_formato_05,FEV-999964,2024-12-20,881341051,85121701,CONSULTA DE PRIMERA VEZ POR TRABAJO SOCIAL,2.0,52000.0
+dian_formato_05,FEV-999964,2024-12-20,881341051,,Consulta De Primera Vez Por Medicina General,1.0,21800.0

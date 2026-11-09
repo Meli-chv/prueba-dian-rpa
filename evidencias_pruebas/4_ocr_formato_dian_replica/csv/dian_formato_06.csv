@@ -1,0 +1,4 @@
+﻿archivo,numero_factura,fecha_emision,nit_emisor,codigo,descripcion,cantidad,precio_unitario
+dian_formato_06,HTFE-448027,2024-10-07,850710066,990211,Educacion grupal en salud por higiene oral,1.0,21800.0
+dian_formato_06,HTFE-448027,2024-10-07,850710066,,Consulta De Primera Vez Por Medicina General,2.0,135000.0
+dian_formato_06,HTFE-448027,2024-10-07,850710066,903841,GLUCOSA EN SUERO U OTRO FLUIDO,1.0,28800.0

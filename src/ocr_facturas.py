@@ -47,7 +47,7 @@ WL_CODIGO = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_./"
 WL_NUMERO = "0123456789.,"
 UMBRAL_CONFIANZA = 80      # confianza media de Tesseract por debajo de esto -> revisión
 UMBRAL_EXACTITUD = 95      # % de coincidencia con la capa de texto por debajo de esto -> revisión
-FIN_TABLA = ("notas", "datos totales", "subtotal", "total bruto", "valor total",
+FIN_TABLA = ("descuentos y recargos", "hoja ", "notas", "datos totales", "subtotal", "total bruto", "valor total",
              "moneda", "total factura", "observaciones", "informacion adicional")
 
 
@@ -280,8 +280,165 @@ def releer_celda(img_bin: np.ndarray, x0: int, y0: int, x1: int, y1: int, wl: st
     return txt.strip()
 
 
+def lineas_horizontales(img_bin: np.ndarray, largo_min: int) -> list[tuple[int, int, int]]:
+    """Bordes horizontales (y, x0, x1) de al menos largo_min píxeles."""
+    inv = 255 - img_bin
+    k = cv2.getStructuringElement(cv2.MORPH_RECT, (max(largo_min // 4, 40), 1))
+    hor = cv2.morphologyEx(inv, cv2.MORPH_OPEN, k)
+    n, _, stats, _ = cv2.connectedComponentsWithStats(hor, 8)
+    lineas = sorted((int(y + h / 2), int(x), int(x + w)) for x, y, w, h, _ in stats[1:] if w >= largo_min)
+    unidas: list[tuple[int, int, int]] = []
+    for y, x0, x1 in lineas:                      # une líneas a 5 px o menos (bordes gruesos)
+        if unidas and y - unidas[-1][0] <= 5:
+            uy, ux0, ux1 = unidas[-1]
+            unidas[-1] = (uy, min(ux0, x0), max(ux1, x1))
+        else:
+            unidas.append((y, x0, x1))
+    return unidas
+
+
+def _nombres_columnas(enc: list[Palabra], intervalos, alto: float) -> list[str]:
+    def col(p):
+        return next((j for j, (a, b) in enumerate(intervalos) if a <= p.cx < b), None)
+    nombres = [""] * len(intervalos)
+    for p in sorted(enc, key=lambda p: (round(p.cy / alto), p.x0)):
+        j = col(p)
+        if j is not None:
+            nombres[j] = (nombres[j] + " " + norm(p.texto)).strip()
+    if len(intervalos) == len(PLANTILLA_DIAN):
+        # 13 columnas = formato estándar DIAN: si el OCR dañó un título, se usa la posición
+        nombres = [n or PLANTILLA_DIAN[j] for j, n in enumerate(nombres)]
+        for j, clave in ((1, "codigo"), (2, "descrip"), (4, "cant"), (5, "precio")):
+            if not any(clave in n for n in nombres):
+                nombres[j] = PLANTILLA_DIAN[j]
+    return nombres
+
+
+def _indices(nombres: list[str]) -> dict | None:
+    def buscar(pred):
+        return next((j for j, n in enumerate(nombres) if pred(n)), None)
+    c = {"cod": buscar(lambda n: "codigo" in n), "des": buscar(lambda n: "descrip" in n),
+         "can": buscar(lambda n: "cant" in n),
+         "pre": buscar(lambda n: "precio" in n and "venta" not in n)}
+    if c["pre"] is None:
+        c["pre"] = buscar(lambda n: "precio" in n)
+    if None in c.values():
+        log.warning("Encabezado de tabla incompleto: %s", nombres)
+        return None
+    return c
+
+
+def releer_descripcion(img_bin: np.ndarray, x0: int, y0: int, x1: int, y1: int) -> str:
+    """Relee una celda de texto libre ampliada al doble (la DIAN usa letra de 5-6 pt y
+    Tesseract a veces pega palabras). Devuelve el texto en una sola línea."""
+    celda = img_bin[max(y0, 0):y1, max(x0, 0):x1]
+    if celda.size == 0:
+        return ""
+    celda = cv2.resize(celda, None, fx=2, fy=2, interpolation=cv2.INTER_CUBIC)
+    celda = cv2.copyMakeBorder(celda, 20, 20, 20, 20, cv2.BORDER_CONSTANT, value=255)
+    txt = pytesseract.image_to_string(celda, lang="spa", config="--oem 1 --psm 6")
+    return re.sub(r"\s+", " ", txt).strip(" |_")
+
+
 def extraer_tabla(filas: list[list[Palabra]], img_bin: np.ndarray | None,
                   releer: bool = False) -> list[dict]:
+    """Tabla "Detalles de Productos" usando la cuadrícula real de la tabla.
+
+    La representación gráfica de la DIAN dibuja el borde de cada celda. Con las líneas
+    horizontales se arma cada fila (aunque la descripción ocupe varios renglones y el
+    número esté centrado verticalmente) y con las verticales cada columna. Si la tabla
+    no tiene bordes, se usa el respaldo por renglones de texto."""
+    claves = ("nro", "codigo", "descrip", "cantidad", "precio", "unitario", "u/m", "descuento", "recargo")
+    i_enc = next((i for i, f in enumerate(filas)
+                  if sum(k in norm(texto_fila(f)) for k in claves) >= 3), None)
+    if i_enc is None or img_bin is None:
+        return _tabla_por_renglones(filas, img_bin, releer)
+    alto = float(np.median([p.y1 - p.y0 for p in filas[i_enc]]))
+    y_enc = float(np.mean([p.cy for p in filas[i_enc]]))
+    x_enc0 = min(p.x0 for p in filas[i_enc])
+    x_enc1 = max(p.x1 for p in filas[i_enc])
+
+    # 1) líneas horizontales de ESTA tabla: la primera bajo el encabezado y las que siguen
+    #    sin un hueco grande (después vienen otras secciones)
+    H = [l for l in lineas_horizontales(img_bin, int((x_enc1 - x_enc0) * 0.5))
+         if l[1] <= x_enc0 + alto * 2 and l[2] >= x_enc1 - alto * 2]
+    abajo = [l for l in H if l[0] > y_enc + alto * 0.6]
+    if len(abajo) < 2:
+        return _tabla_por_renglones(filas, img_bin, releer)
+    tabla = [abajo[0]]
+    for l in abajo[1:]:
+        if l[0] - tabla[-1][0] > alto * 12:
+            break
+        tabla.append(l)
+    if len(tabla) < 2:
+        return _tabla_por_renglones(filas, img_bin, releer)
+    y_hdr, y_fin = tabla[0][0], tabla[-1][0]
+    x0_tab, x1_tab = min(l[1] for l in tabla), max(l[2] for l in tabla)
+
+    # 2) columnas por los bordes verticales (solo dentro de la tabla)
+    y_top = int(y_enc - alto * 3.5)
+    xs = [x for x in lineas_verticales(img_bin, y_top, int(y_fin + 2)) if x0_tab - 6 <= x <= x1_tab + 6]
+    if len(xs) < 5:
+        return _tabla_por_renglones(filas, img_bin, releer)
+    intervalos = list(zip(xs, xs[1:]))
+    todas = [p for f in filas for p in f]
+    enc = [p for p in todas if y_top <= p.cy <= y_hdr]
+    nombres = _nombres_columnas(enc, intervalos, alto)
+    c = _indices(nombres)
+    if c is None:
+        return []
+
+    def col_de(p: Palabra) -> int | None:
+        return next((j for j, (a, b) in enumerate(intervalos) if a <= p.cx < b), None)
+
+    limpia = quitar_lineas(img_bin) if releer else None
+    items: list[dict] = []
+    for (ya, _, _), (yb, _, _) in zip(tabla, tabla[1:]):           # una banda = una fila
+        celdas: dict[int, list[Palabra]] = {}
+        for p in todas:
+            if ya < p.cy < yb:
+                j = col_de(p)
+                if j is not None:
+                    celdas.setdefault(j, []).append(p)
+
+        texto_banda = norm(" ".join(p.texto for ps in celdas.values() for p in sorted(ps, key=lambda q: q.x0)))
+        if any(k in texto_banda for k in FIN_TABLA):              # empezó otra sección
+            break
+
+        def texto(j):
+            ps = [p for r in agrupar_filas(celdas.get(j, [])) for p in r]   # renglones de la celda, en orden
+            return " ".join(p.texto for p in ps if not re.fullmatch(r"[.,;:'`´~\-]", p.texto)
+                            and not (len(p.texto) == 1 and p.texto.islower() and p.conf < 60)).strip()
+
+        if limpia is not None:
+            for cj, wl in ((c["cod"], WL_CODIGO), (c["can"], WL_NUMERO), (c["pre"], WL_NUMERO)):
+                cajas = [p for p in celdas.get(cj, []) if wl is WL_CODIGO or re.search(r"\d", p.texto)]
+                if not cajas:
+                    continue
+                a, b = intervalos[cj]
+                x0 = int(a) + 3 if wl is WL_CODIGO else int(min(p.x0 for p in cajas)) - 4   # sin el "$"
+                r = releer_celda(limpia, x0, int(min(p.y0 for p in cajas)) - 6, int(b) - 3,
+                                 int(max(p.y1 for p in cajas)) + 6, wl)
+                if r and (wl is WL_CODIGO or a_numero(r) is not None):
+                    celdas[cj] = [Palabra(r, x0, ya, b, yb)]
+
+        if limpia is not None and celdas.get(c["des"]):
+            a, b = intervalos[c["des"]]
+            r = releer_descripcion(limpia, int(a) + 2, int(ya) + 2, int(b) - 2, int(yb) - 2)
+            actual = " ".join(p.texto for p in celdas[c["des"]])
+            if r and len(r.split()) >= len(actual.split()) and len(r) >= 0.8 * len(actual):
+                celdas[c["des"]] = [Palabra(w, a + k, ya, a + k + 1, ya + 1, 100) for k, w in enumerate(r.split())]
+
+        item = {"codigo": texto(c["cod"]), "descripcion": texto(c["des"]),
+                "cantidad": a_numero(texto(c["can"])), "precio_unitario": a_numero(texto(c["pre"]))}
+        if item["descripcion"] or item["cantidad"] is not None or item["precio_unitario"] is not None:
+            items.append(item)
+    return items
+
+
+def _tabla_por_renglones(filas: list[list[Palabra]], img_bin: np.ndarray | None,
+                         releer: bool = False) -> list[dict]:
+    """Respaldo para tablas sin bordes horizontales: agrupa por renglones de texto."""
     # 1) ubicar el encabezado de la tabla
     claves = ("nro", "codigo", "descrip", "cantidad", "precio", "unitario", "u/m", "descuento", "recargo")
     i_enc = next((i for i, f in enumerate(filas)
@@ -492,7 +649,9 @@ def procesar_pdf(pdf: Path, dir_img: Path, dir_csv: Path, nit: str = "") -> tupl
         "pct_palabras_conf_bajo_60": round(float(np.mean(np.array(confs) < 60) * 100), 2) if confs else 0,
         "campos_encabezado_ok": sum(v is not None for v in enc.values()),
         "items_extraidos": len(items),
-        "items_con_vacios": int(sum(any(it[k] in (None, "") for k in it) for it in items)),
+        # el código es opcional en la DIAN; se exige descripción, cantidad y precio
+        "items_con_vacios": int(sum(any(it[k] in (None, "") for k in ("descripcion", "cantidad", "precio_unitario"))
+                                    for it in items)),
         "exactitud_vs_capa_texto_pct": exactitud,
     })
     m["requiere_revision"] = requiere_revision(m)
