@@ -1,0 +1,100 @@
+{
+  "name": "RPA DIAN + OCR facturas",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": { "interval": [ { "field": "cronExpression", "expression": "0 6 * * 1-5" } ] }
+      },
+      "id": "a1",
+      "name": "Diario 6:00 a.m. (L-V)",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [0, 0]
+    },
+    {
+      "parameters": {
+        "command": "cd /opt/prueba-dian-rpa && .venv/bin/python main.py todo --sin-aviso > output/ultima_corrida.log 2>&1; cat output/resumen_ejecucion.json"
+      },
+      "id": "a2",
+      "name": "Ejecutar RPA + OCR",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [240, 0]
+    },
+    {
+      "parameters": {
+        "jsCode": "const r = JSON.parse($input.first().json.stdout);\nconst rpa = r.rpa || {estados: {}, cufes: 0, problemas: []};\nconst ocr = r.ocr || {};\nconst icono = {OK: '✅', PARCIAL: '⚠️', FALLA: '🔴'}[r.estado];\nconst lineas = [\n  `${icono} RPA DIAN + OCR — ${r.estado} (${r.fecha})`,\n  `RPA: ${rpa.estados.descargado || 0}/${rpa.cufes} PDF · captcha prom. ${rpa.seg_promedio_captcha} s`,\n  `OCR: ${ocr.procesados_ok}/${ocr.archivos} facturas · ${ocr.items_totales} ítems · exactitud ${ocr.exactitud_media_vs_capa_texto_pct}%`,\n  ...rpa.problemas.map(p => `• ${p.cufe} → ${p.estado}`),\n  ...(ocr.revision || []).map(x => `• Revisar ${x.archivo}: ${x.motivo}`)\n];\nreturn [{ json: { estado: r.estado, mensaje: lineas.join('\\n'), resumen: r } }];"
+      },
+      "id": "a3",
+      "name": "Armar resumen",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [480, 0]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": true, "leftValue": "", "typeValidation": "strict" },
+          "conditions": [
+            {
+              "id": "c1",
+              "leftValue": "={{ $json.estado }}",
+              "rightValue": "OK",
+              "operator": { "type": "string", "operation": "notEquals" }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "a4",
+      "name": "¿Hay algo para revisar?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [720, 0]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.TEAMS_WEBHOOK_URL }}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({type: 'message', attachments: [{contentType: 'application/vnd.microsoft.card.adaptive', content: {type: 'AdaptiveCard', version: '1.4', body: [{type: 'TextBlock', text: $json.mensaje, wrap: true}]}}]}) }}",
+        "options": {}
+      },
+      "id": "a5",
+      "name": "Alerta a Teams (NOC)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [960, -100]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.TEAMS_WEBHOOK_URL }}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({type: 'message', attachments: [{contentType: 'application/vnd.microsoft.card.adaptive', content: {type: 'AdaptiveCard', version: '1.4', body: [{type: 'TextBlock', text: $json.mensaje, wrap: true}]}}]}) }}",
+        "options": {}
+      },
+      "id": "a6",
+      "name": "Resumen OK a Teams",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [960, 100]
+    }
+  ],
+  "connections": {
+    "Diario 6:00 a.m. (L-V)": { "main": [ [ { "node": "Ejecutar RPA + OCR", "type": "main", "index": 0 } ] ] },
+    "Ejecutar RPA + OCR": { "main": [ [ { "node": "Armar resumen", "type": "main", "index": 0 } ] ] },
+    "Armar resumen": { "main": [ [ { "node": "¿Hay algo para revisar?", "type": "main", "index": 0 } ] ] },
+    "¿Hay algo para revisar?": {
+      "main": [
+        [ { "node": "Alerta a Teams (NOC)", "type": "main", "index": 0 } ],
+        [ { "node": "Resumen OK a Teams", "type": "main", "index": 0 } ]
+      ]
+    }
+  },
+  "settings": { "executionOrder": "v1", "timezone": "America/Bogota" },
+  "pinData": {}
+}

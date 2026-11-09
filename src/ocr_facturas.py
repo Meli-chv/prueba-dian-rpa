@@ -45,6 +45,8 @@ PLANTILLA_DIAN = ["nro", "codigo", "descripcion", "u/m", "cantidad", "precio uni
                   "recargo", "iva", "%", "inc", "%", "precio unitario de venta"]
 WL_CODIGO = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_./"
 WL_NUMERO = "0123456789.,"
+UMBRAL_CONFIANZA = 80      # confianza media de Tesseract por debajo de esto -> revisión
+UMBRAL_EXACTITUD = 95      # % de coincidencia con la capa de texto por debajo de esto -> revisión
 FIN_TABLA = ("notas", "datos totales", "subtotal", "total bruto", "valor total",
              "moneda", "total factura", "observaciones", "informacion adicional")
 
@@ -412,10 +414,40 @@ def comparar(df_ocr: pd.DataFrame, df_ref: pd.DataFrame) -> float | None:
     return round(float((a.values == b.values).mean() * 100), 2)
 
 
-def procesar_pdf(pdf: Path, dir_img: Path, dir_csv: Path) -> tuple[pd.DataFrame, dict]:
+def abrir_pdf(pdf: Path, nit: str = "") -> fitz.Document:
+    """Abre el PDF; la DIAN lo entrega protegido con el NIT como contraseña.
+    Se prueba el NIT tal cual, sin dígito de verificación y solo con dígitos."""
+    doc = fitz.open(pdf)
+    if doc.needs_pass:
+        base = nit.strip()
+        candidatos = dict.fromkeys([base, base.split("-")[0], re.sub(r"\D", "", base),
+                                    re.sub(r"\D", "", base)[:-1]])
+        if not any(c and doc.authenticate(c) for c in candidatos):
+            raise PermissionError("PDF protegido: el NIT no lo desbloquea (revisa --nit / DIAN_NIT)")
+    return doc
+
+
+def requiere_revision(m: dict) -> str:
+    """Reglas de calidad para escalar a revisión humana (como umbrales de alerta)."""
+    motivos = []
+    if m.get("campos_encabezado_ok", 0) < 3:
+        motivos.append("encabezado incompleto")
+    if m.get("items_extraidos", 0) == 0:
+        motivos.append("sin ítems")
+    if m.get("items_con_vacios", 0) > 0:
+        motivos.append("ítems con campos vacíos")
+    if m.get("confianza_media", 100) < UMBRAL_CONFIANZA:
+        motivos.append(f"confianza < {UMBRAL_CONFIANZA}")
+    ex = m.get("exactitud_vs_capa_texto_pct")
+    if ex is not None and ex < UMBRAL_EXACTITUD:
+        motivos.append(f"exactitud < {UMBRAL_EXACTITUD}%")
+    return "; ".join(motivos)
+
+
+def procesar_pdf(pdf: Path, dir_img: Path, dir_csv: Path, nit: str = "") -> tuple[pd.DataFrame, dict]:
     m = {"archivo": pdf.name}
     t0 = time.perf_counter()
-    doc = fitz.open(pdf)
+    doc = abrir_pdf(pdf, nit)
     m["paginas"] = doc.page_count
 
     paginas_ocr, paginas_ref, confs, angulos = [], [], [], []
@@ -463,10 +495,11 @@ def procesar_pdf(pdf: Path, dir_img: Path, dir_csv: Path) -> tuple[pd.DataFrame,
         "items_con_vacios": int(sum(any(it[k] in (None, "") for k in it) for it in items)),
         "exactitud_vs_capa_texto_pct": exactitud,
     })
+    m["requiere_revision"] = requiere_revision(m)
     return df, m
 
 
-def ejecutar(dir_pdf: Path, salida: Path) -> pd.DataFrame:
+def ejecutar(dir_pdf: Path, salida: Path, nit: str = "") -> pd.DataFrame:
     dir_img, dir_csv = salida / "imagenes", salida / "csv"
     dir_img.mkdir(parents=True, exist_ok=True)
     dir_csv.mkdir(parents=True, exist_ok=True)
@@ -478,7 +511,7 @@ def ejecutar(dir_pdf: Path, salida: Path) -> pd.DataFrame:
     dfs, metricas = [], []
     for pdf in pdfs:
         try:
-            df, m = procesar_pdf(pdf, dir_img, dir_csv)
+            df, m = procesar_pdf(pdf, dir_img, dir_csv, nit)
             m["estado"] = "ok"
             dfs.append(df)
         except Exception as e:
@@ -502,6 +535,7 @@ def ejecutar(dir_pdf: Path, salida: Path) -> pd.DataFrame:
         "items_totales": int(ok["items_extraidos"].sum()) if len(ok) else 0,
         "exactitud_media_vs_capa_texto_pct": (round(float(ok["exactitud_vs_capa_texto_pct"].dropna().mean()), 2)
                                               if len(ok) and ok["exactitud_vs_capa_texto_pct"].notna().any() else None),
+        "facturas_para_revision": int((ok["requiere_revision"] != "").sum()) if len(ok) else 0,
         "dpi": DPI, "motor": f"Tesseract {pytesseract.get_tesseract_version()} (spa) {TESS_CONFIG}",
     }
     (salida / "resumen_metricas.json").write_text(json.dumps(resumen, indent=2, ensure_ascii=False), encoding="utf-8")
