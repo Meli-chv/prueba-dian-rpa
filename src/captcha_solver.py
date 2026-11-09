@@ -96,13 +96,23 @@ def _esperar_token(page: Page, segundos: float) -> bool:
 # --------------------------------------------------------------------------- #
 # Capa 1b: clic "humano" en la casilla
 # --------------------------------------------------------------------------- #
-def _clic_casilla(page: Page) -> None:
+def caja_visible(page: Page):
+    """Devuelve el recuadro del widget si se ve en pantalla. El portal de la DIAN usa
+    Turnstile invisible en el buscador: el iframe existe pero no tiene casilla."""
     f = _frame_turnstile(page)
     if not f:
-        return
-    caja = f.frame_element().bounding_box()
+        return None
+    try:
+        caja = f.frame_element().bounding_box()
+    except Exception:
+        return None
+    return caja if caja and caja["width"] >= 100 and caja["height"] >= 30 else None
+
+
+def _clic_casilla(page: Page) -> bool:
+    caja = caja_visible(page)
     if not caja:
-        return
+        return False
     x = caja["x"] + random.uniform(24, 34)                 # la casilla está a la izquierda
     y = caja["y"] + caja["height"] / 2 + random.uniform(-3, 3)
     page.mouse.move(x - random.randint(80, 200), y - random.randint(40, 120), steps=random.randint(8, 14))
@@ -110,6 +120,7 @@ def _clic_casilla(page: Page) -> None:
     page.wait_for_timeout(random.randint(200, 500))
     page.mouse.click(x, y)
     log.info("Clic en la casilla de Turnstile (%.0f, %.0f)", x, y)
+    return True
 
 
 # --------------------------------------------------------------------------- #
@@ -148,7 +159,7 @@ def _inyectar_token(page: Page, token: str) -> None:
 # Orquestador
 # --------------------------------------------------------------------------- #
 def resolver(page: Page, detectar_s: float = 8, auto_s: float = 12,
-             clics: int = 4, manual_s: float = 180) -> CaptchaResult:
+             clics: int = 2, manual_s: float = 300, invisible_ok: bool = True) -> CaptchaResult:
     t0 = time.perf_counter()
 
     # ¿hay captcha? (el widget tarda unos segundos en inyectarse)
@@ -160,11 +171,16 @@ def resolver(page: Page, detectar_s: float = 8, auto_s: float = 12,
     if token_actual(page):
         return CaptchaResult(True, "auto", time.perf_counter() - t0)
 
-    # Capa 1: validación automática y, si no, clic en la casilla
+    # Capa 1: validación automática y, si hay casilla visible, clic en ella
     if _esperar_token(page, auto_s):
         return CaptchaResult(True, "auto", time.perf_counter() - t0)
+    if caja_visible(page) is None and invisible_ok:
+        # Turnstile invisible: el token se genera al enviar el formulario; no se hace clic a ciegas
+        log.info("Turnstile invisible (sin casilla visible): se continúa con el envío")
+        return CaptchaResult(True, "invisible", time.perf_counter() - t0)
     for _ in range(clics):
-        _clic_casilla(page)
+        if not _clic_casilla(page):
+            break
         if _esperar_token(page, 8):
             return CaptchaResult(True, "clic", time.perf_counter() - t0)
 
@@ -179,7 +195,15 @@ def resolver(page: Page, detectar_s: float = 8, auto_s: float = 12,
 
     # Capa 3: persona en el ciclo
     if sys.stdin.isatty() and os.getenv("HEADLESS", "0") != "1":
-        print("\n>>> Resuelve el captcha en la ventana del navegador; el robot sigue solo al detectarlo.")
+        print("\n" + "=" * 70 + "\n>>> CAPTCHA: ve a la ventana del navegador, baja hasta la casilla de Cloudflare\n"
+              ">>> y haz clic tú. El robot sigue solo apenas se valide (espera hasta 5 min).\n" + "=" * 70, flush=True)
+        try:
+            page.bring_to_front()
+            page.evaluate("() => { const w = document.querySelector('.cf-turnstile') || "
+                          "document.querySelector('[name=cf-turnstile-response]'); "
+                          "if (w) w.scrollIntoView({block: 'center'}); }")
+        except Exception:
+            pass
         if _esperar_token(page, manual_s):
             return CaptchaResult(True, "manual", time.perf_counter() - t0)
 

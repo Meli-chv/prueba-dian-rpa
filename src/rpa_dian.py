@@ -117,20 +117,25 @@ def consultar_cufe(page: Page, ctx: BrowserContext, cufe: str, nit: str, carpeta
         try:
             page.goto(URL_BUSQUEDA, wait_until="domcontentloaded", timeout=60000)
 
-            c1 = resolver_captcha(page)                         # captcha del buscador
+            # Primero el formulario: el NIT aparece al escribir el CUFE y el captcha
+            # del buscador es invisible (se valida con el formulario lleno)
+            page.locator(SEL_CUFE).wait_for(state="visible", timeout=20000)
+            page.locator(SEL_CUFE).click()
+            page.locator(SEL_CUFE).press_sequentially(cufe, delay=8)
+            if nit:
+                page.locator(SEL_NIT).wait_for(state="visible", timeout=10000)
+                page.locator(SEL_NIT).click()
+                page.locator(SEL_NIT).press_sequentially(nit, delay=40)
+
+            c1 = resolver_captcha(page, auto_s=6)                 # captcha del buscador
             if not c1.resuelto:
                 res.estado = "captcha_fallido"
                 raise RuntimeError("Captcha del buscador no resuelto")
 
-            page.locator(SEL_CUFE).fill(cufe)
-            if nit:
-                page.locator(SEL_NIT).wait_for(state="visible", timeout=10000)
-                page.locator(SEL_NIT).fill(nit)
-
             with page.expect_navigation(wait_until="domcontentloaded", timeout=60000):
                 page.locator(SEL_BUSCAR).first.click(timeout=10000)
 
-            c2 = resolver_captcha(page)                         # captcha del detalle
+            c2 = resolver_captcha(page, invisible_ok=True)      # captcha del detalle (si aparece)
             res.metodo_captcha = f"{c1.metodo}+{c2.metodo}"
             res.seg_captcha = round(c1.segundos + c2.segundos, 2)
             if not c2.resuelto:
@@ -158,6 +163,30 @@ def consultar_cufe(page: Page, ctx: BrowserContext, cufe: str, nit: str, carpeta
 
     res.seg_total = round(time.perf_counter() - t0, 2)
     return res
+
+
+def abrir_navegador(p, salida: Path) -> BrowserContext:
+    """Prefiere el Google Chrome instalado (Cloudflare confía más en él que en el
+    Chromium de pruebas), sin la bandera --enable-automation ni la barra de
+    "controlado por software automatizado", con ventana maximizada y perfil
+    persistente para reutilizar las cookies de Cloudflare entre corridas."""
+    opciones = dict(
+        user_data_dir=str(salida / ".perfil_navegador"),
+        headless=os.getenv("HEADLESS", "0") == "1",
+        accept_downloads=True, locale="es-CO", timezone_id="America/Bogota",
+        no_viewport=True,
+        ignore_default_args=["--enable-automation"],
+        args=["--disable-blink-features=AutomationControlled", "--start-maximized"],
+    )
+    canal = os.getenv("NAVEGADOR", "chrome")      # chrome | msedge | chromium
+    if canal != "chromium":
+        try:
+            ctx = p.chromium.launch_persistent_context(channel=canal, **opciones)
+            log.info("Navegador: %s instalado en el equipo", canal)
+            return ctx
+        except Exception as e:
+            log.warning("No se pudo abrir %s (%s); se usa el Chromium de Playwright", canal, str(e).splitlines()[0])
+    return p.chromium.launch_persistent_context(**opciones)
 
 
 def leer_cufes(ruta: Path, nit_general: str = "") -> list[tuple[str, str]]:
@@ -203,13 +232,7 @@ def ejecutar(pares: list[tuple[str, str]], salida: Path, pausa_s: float = 4.0) -
     resultados: list[ResultadoConsulta] = []
 
     with sync_playwright() as p:
-        ctx = p.chromium.launch_persistent_context(
-            user_data_dir=str(salida / ".perfil_navegador"),  # reutiliza cookies de Cloudflare
-            headless=os.getenv("HEADLESS", "0") == "1",
-            accept_downloads=True, locale="es-CO", timezone_id="America/Bogota",
-            viewport={"width": 1366, "height": 900},
-            args=["--disable-blink-features=AutomationControlled"],
-        )
+        ctx = abrir_navegador(p, salida)
         page = ctx.pages[0] if ctx.pages else ctx.new_page()
         for i, (cufe, nit) in enumerate(pares, 1):
             log.info("[%d/%d] Consultando CUFE %s…", i, len(pares), cufe[:16])
