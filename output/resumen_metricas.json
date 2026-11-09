@@ -1,0 +1,13 @@
+{
+  "archivos": 10,
+  "procesados_ok": 10,
+  "tiempo_total_seg": 109.91,
+  "tiempo_promedio_por_factura_seg": 10.98,
+  "tiempo_promedio_ocr_por_pagina_seg": 1.97,
+  "confianza_media_ocr": 91.21,
+  "items_totales": 22,
+  "exactitud_media_vs_capa_texto_pct": 85.62,
+  "facturas_para_revision": 8,
+  "dpi": 300,
+  "motor": "Tesseract 5.4.0.20240606 (spa) --oem 1 --psm 3"
+}

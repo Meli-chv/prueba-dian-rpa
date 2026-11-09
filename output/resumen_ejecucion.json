@@ -1,0 +1,53 @@
+{
+  "fecha": "2026-11-08 23:29:29",
+  "duracion_seg": 111.5,
+  "ocr": {
+    "archivos": 10,
+    "procesados_ok": 10,
+    "tiempo_total_seg": 109.91,
+    "tiempo_promedio_por_factura_seg": 10.98,
+    "tiempo_promedio_ocr_por_pagina_seg": 1.97,
+    "confianza_media_ocr": 91.21,
+    "items_totales": 22,
+    "exactitud_media_vs_capa_texto_pct": 85.62,
+    "facturas_para_revision": 8,
+    "dpi": 300,
+    "motor": "Tesseract 5.4.0.20240606 (spa) --oem 1 --psm 3",
+    "revision": [
+      {
+        "archivo": "2a90ab2ce6b54e505fc9",
+        "motivo": "ítems con campos vacíos; exactitud < 95%"
+      },
+      {
+        "archivo": "341a447c4891f8e30277",
+        "motivo": "ítems con campos vacíos; exactitud < 95%"
+      },
+      {
+        "archivo": "3e6331e537f08a54ec2d",
+        "motivo": "ítems con campos vacíos; exactitud < 95%"
+      },
+      {
+        "archivo": "6a7ec741dd95ff7f5240",
+        "motivo": "exactitud < 95%"
+      },
+      {
+        "archivo": "bbed883f80308e0e0e16",
+        "motivo": "exactitud < 95%"
+      },
+      {
+        "archivo": "c2e740942c1925d57f2e",
+        "motivo": "exactitud < 95%"
+      },
+      {
+        "archivo": "eccc372e4bdb8125cf2e",
+        "motivo": "exactitud < 95%"
+      },
+      {
+        "archivo": "f639eb72baf2e301eddd",
+        "motivo": "exactitud < 95%"
+      }
+    ],
+    "throughput_facturas_hora": 328.0
+  },
+  "estado": "PARCIAL"
+}

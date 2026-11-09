@@ -1,0 +1,18 @@
+# HELP dian_rpa_cufes_total CUFE procesados por estado en la última corrida
+# TYPE dian_rpa_cufes_total gauge
+# TYPE dian_ocr_factura_seg_promedio gauge
+dian_ocr_factura_seg_promedio 10.98
+# TYPE dian_ocr_confianza_media gauge
+dian_ocr_confianza_media 91.21
+# TYPE dian_ocr_exactitud_pct gauge
+dian_ocr_exactitud_pct 85.62
+# TYPE dian_ocr_items_total gauge
+dian_ocr_items_total 22
+# TYPE dian_ocr_throughput_facturas_hora gauge
+dian_ocr_throughput_facturas_hora 328.0
+# TYPE dian_ocr_facturas_revision gauge
+dian_ocr_facturas_revision 8
+# TYPE dian_proceso_estado gauge
+dian_proceso_estado{estado="PARCIAL"} 1
+# TYPE dian_proceso_ultima_ejecucion_timestamp gauge
+dian_proceso_ultima_ejecucion_timestamp 1794198569

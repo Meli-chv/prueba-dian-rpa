@@ -1,0 +1,118 @@
+2026-11-08 22:56:21,348 INFO    rpa | Validación de CUFE: 10/10 con formato válido (SHA-384, 96 hex)
+2026-11-08 22:56:21,354 INFO    root | CUFE #1  longitud=96 solo_hex=True nit=sí -> VÁLIDO
+2026-11-08 22:56:21,354 INFO    root | CUFE #2  longitud=96 solo_hex=True nit=sí -> VÁLIDO
+2026-11-08 22:56:21,354 INFO    root | CUFE #3  longitud=96 solo_hex=True nit=sí -> VÁLIDO
+2026-11-08 22:56:21,354 INFO    root | CUFE #4  longitud=96 solo_hex=True nit=sí -> VÁLIDO
+2026-11-08 22:56:21,356 INFO    root | CUFE #5  longitud=96 solo_hex=True nit=sí -> VÁLIDO
+2026-11-08 22:56:21,356 INFO    root | CUFE #6  longitud=96 solo_hex=True nit=sí -> VÁLIDO
+2026-11-08 22:56:21,356 INFO    root | CUFE #7  longitud=96 solo_hex=True nit=sí -> VÁLIDO
+2026-11-08 22:56:21,356 INFO    root | CUFE #8  longitud=96 solo_hex=True nit=sí -> VÁLIDO
+2026-11-08 22:56:21,356 INFO    root | CUFE #9  longitud=96 solo_hex=True nit=sí -> VÁLIDO
+2026-11-08 22:56:21,356 INFO    root | CUFE #10 longitud=96 solo_hex=True nit=sí -> VÁLIDO
+2026-11-08 22:56:22,140 INFO    rpa | Validación de CUFE: 10/10 con formato válido (SHA-384, 96 hex)
+2026-11-08 22:56:24,449 INFO    rpa | [1/10] Consultando CUFE eccc372e4bdb8125…
+2026-11-08 22:56:38,684 INFO    captcha | Clic en la casilla de Turnstile (1087, 862)
+2026-11-08 22:56:47,688 INFO    captcha | Clic en la casilla de Turnstile (1085, 858)
+2026-11-08 22:56:56,563 INFO    captcha | Clic en la casilla de Turnstile (1084, 864)
+2026-11-08 22:57:05,601 INFO    captcha | Clic en la casilla de Turnstile (1088, 861)
+2026-11-08 22:57:13,872 WARNING rpa | CUFE eccc372e4bdb… intento 1/3 falló: TargetClosedError: Page.evaluate: Target page, context or browser has been closed
+2026-11-08 22:57:25,918 INFO    rpa | Validación de CUFE: 10/10 con formato válido (SHA-384, 96 hex)
+2026-11-08 22:57:25,918 INFO    root | CUFE #1  longitud=96 solo_hex=True nit=sí -> VÁLIDO
+2026-11-08 22:57:25,918 INFO    root | CUFE #2  longitud=96 solo_hex=True nit=sí -> VÁLIDO
+2026-11-08 22:57:25,918 INFO    root | CUFE #3  longitud=96 solo_hex=True nit=sí -> VÁLIDO
+2026-11-08 22:57:25,918 INFO    root | CUFE #4  longitud=96 solo_hex=True nit=sí -> VÁLIDO
+2026-11-08 22:57:25,918 INFO    root | CUFE #5  longitud=96 solo_hex=True nit=sí -> VÁLIDO
+2026-11-08 22:57:25,918 INFO    root | CUFE #6  longitud=96 solo_hex=True nit=sí -> VÁLIDO
+2026-11-08 22:57:25,918 INFO    root | CUFE #7  longitud=96 solo_hex=True nit=sí -> VÁLIDO
+2026-11-08 22:57:25,918 INFO    root | CUFE #8  longitud=96 solo_hex=True nit=sí -> VÁLIDO
+2026-11-08 22:57:25,918 INFO    root | CUFE #9  longitud=96 solo_hex=True nit=sí -> VÁLIDO
+2026-11-08 22:57:25,918 INFO    root | CUFE #10 longitud=96 solo_hex=True nit=sí -> VÁLIDO
+2026-11-08 22:57:26,805 INFO    rpa | Validación de CUFE: 10/10 con formato válido (SHA-384, 96 hex)
+2026-11-08 22:57:28,213 INFO    rpa | [1/10] Consultando CUFE eccc372e4bdb8125…
+2026-11-08 22:57:41,997 INFO    captcha | Clic en la casilla de Turnstile (1083, 861)
+2026-11-08 22:57:51,245 INFO    captcha | Clic en la casilla de Turnstile (1086, 859)
+2026-11-08 22:58:00,279 INFO    captcha | Clic en la casilla de Turnstile (1086, 859)
+2026-11-08 22:58:09,317 INFO    captcha | Clic en la casilla de Turnstile (1088, 863)
+2026-11-08 23:01:17,970 WARNING rpa | CUFE eccc372e4bdb… intento 1/3 falló: RuntimeError: Captcha del buscador no resuelto
+2026-11-08 23:01:59,634 INFO    captcha | Clic en la casilla de Turnstile (1090, 863)
+2026-11-08 23:02:11,824 ERROR   asyncio | Future exception was never retrieved
+future: <Future finished exception=TargetClosedError('Target page, context or browser has been closed')>
+playwright._impl._errors.TargetClosedError: Target page, context or browser has been closed
+2026-11-08 23:02:27,548 INFO    rpa | Validación de CUFE: 10/10 con formato válido (SHA-384, 96 hex)
+2026-11-08 23:02:27,550 INFO    root | CUFE #1  longitud=96 solo_hex=True nit=sí -> VÁLIDO
+2026-11-08 23:02:27,550 INFO    root | CUFE #2  longitud=96 solo_hex=True nit=sí -> VÁLIDO
+2026-11-08 23:02:27,550 INFO    root | CUFE #3  longitud=96 solo_hex=True nit=sí -> VÁLIDO
+2026-11-08 23:02:27,550 INFO    root | CUFE #4  longitud=96 solo_hex=True nit=sí -> VÁLIDO
+2026-11-08 23:02:27,550 INFO    root | CUFE #5  longitud=96 solo_hex=True nit=sí -> VÁLIDO
+2026-11-08 23:02:27,550 INFO    root | CUFE #6  longitud=96 solo_hex=True nit=sí -> VÁLIDO
+2026-11-08 23:02:27,550 INFO    root | CUFE #7  longitud=96 solo_hex=True nit=sí -> VÁLIDO
+2026-11-08 23:02:27,550 INFO    root | CUFE #8  longitud=96 solo_hex=True nit=sí -> VÁLIDO
+2026-11-08 23:02:27,550 INFO    root | CUFE #9  longitud=96 solo_hex=True nit=sí -> VÁLIDO
+2026-11-08 23:02:27,550 INFO    root | CUFE #10 longitud=96 solo_hex=True nit=sí -> VÁLIDO
+2026-11-08 23:02:28,319 INFO    rpa | Validación de CUFE: 10/10 con formato válido (SHA-384, 96 hex)
+2026-11-08 23:02:29,567 INFO    rpa | Navegador: chrome instalado en el equipo
+2026-11-08 23:02:29,569 INFO    rpa | [1/10] Consultando CUFE eccc372e4bdb8125…
+2026-11-08 23:02:39,903 INFO    captcha | Clic en la casilla de Turnstile (1255, 634)
+2026-11-08 23:02:48,903 INFO    captcha | Clic en la casilla de Turnstile (1252, 636)
+2026-11-08 23:07:52,867 ERROR   asyncio | Future exception was never retrieved
+future: <Future finished exception=TargetClosedError('Target page, context or browser has been closed')>
+playwright._impl._errors.TargetClosedError: Target page, context or browser has been closed
+2026-11-08 23:08:27,185 INFO    rpa | Validación de CUFE: 10/10 con formato válido (SHA-384, 96 hex)
+2026-11-08 23:08:27,185 INFO    root | CUFE #1  longitud=96 solo_hex=True nit=sí -> VÁLIDO
+2026-11-08 23:08:27,185 INFO    root | CUFE #2  longitud=96 solo_hex=True nit=sí -> VÁLIDO
+2026-11-08 23:08:27,186 INFO    root | CUFE #3  longitud=96 solo_hex=True nit=sí -> VÁLIDO
+2026-11-08 23:08:27,186 INFO    root | CUFE #4  longitud=96 solo_hex=True nit=sí -> VÁLIDO
+2026-11-08 23:08:27,186 INFO    root | CUFE #5  longitud=96 solo_hex=True nit=sí -> VÁLIDO
+2026-11-08 23:08:27,186 INFO    root | CUFE #6  longitud=96 solo_hex=True nit=sí -> VÁLIDO
+2026-11-08 23:08:27,186 INFO    root | CUFE #7  longitud=96 solo_hex=True nit=sí -> VÁLIDO
+2026-11-08 23:08:27,186 INFO    root | CUFE #8  longitud=96 solo_hex=True nit=sí -> VÁLIDO
+2026-11-08 23:08:27,186 INFO    root | CUFE #9  longitud=96 solo_hex=True nit=sí -> VÁLIDO
+2026-11-08 23:08:27,186 INFO    root | CUFE #10 longitud=96 solo_hex=True nit=sí -> VÁLIDO
+2026-11-08 23:08:28,162 INFO    rpa | Validación de CUFE: 10/10 con formato válido (SHA-384, 96 hex)
+2026-11-08 23:08:31,937 INFO    rpa | Motor patchright conectado a Chrome abierto en http://127.0.0.1:9222
+2026-11-08 23:08:31,937 INFO    rpa | [1/10] Consultando CUFE eccc372e4bdb8125…
+2026-11-08 23:08:43,581 INFO    rpa |   -> descargado (11.64s, captcha=auto+auto, intentos=1)
+2026-11-08 23:08:47,583 INFO    rpa | [2/10] Consultando CUFE 8e7b821b46445807…
+2026-11-08 23:09:05,773 INFO    rpa |   -> descargado (18.2s, captcha=auto+auto, intentos=1)
+2026-11-08 23:09:09,781 INFO    rpa | [3/10] Consultando CUFE 6a7ec741dd95ff7f…
+2026-11-08 23:09:24,514 INFO    rpa |   -> descargado (14.73s, captcha=auto+auto, intentos=1)
+2026-11-08 23:09:28,518 INFO    rpa | [4/10] Consultando CUFE c2e740942c1925d5…
+2026-11-08 23:09:44,463 INFO    rpa |   -> descargado (15.95s, captcha=auto+auto, intentos=1)
+2026-11-08 23:09:48,466 INFO    rpa | [5/10] Consultando CUFE 3e6331e537f08a54…
+2026-11-08 23:10:10,315 INFO    rpa |   -> descargado (21.85s, captcha=auto+auto, intentos=1)
+2026-11-08 23:10:14,318 INFO    rpa | [6/10] Consultando CUFE f639eb72baf2e301…
+2026-11-08 23:10:24,387 INFO    captcha | Clic en la casilla de Turnstile (754, 690)
+2026-11-08 23:10:33,635 INFO    rpa |   -> descargado (19.32s, captcha=clic+auto, intentos=1)
+2026-11-08 23:10:37,636 INFO    rpa | [7/10] Consultando CUFE 2a90ab2ce6b54e50…
+2026-11-08 23:10:55,444 INFO    rpa |   -> descargado (17.81s, captcha=auto+auto, intentos=1)
+2026-11-08 23:10:59,446 INFO    rpa | [8/10] Consultando CUFE 341a447c4891f8e3…
+2026-11-08 23:11:16,711 INFO    rpa |   -> descargado (17.26s, captcha=auto+auto, intentos=1)
+2026-11-08 23:11:20,712 INFO    rpa | [9/10] Consultando CUFE bbed883f80308e0e…
+2026-11-08 23:11:41,070 INFO    rpa |   -> descargado (20.36s, captcha=auto+auto, intentos=1)
+2026-11-08 23:11:45,075 INFO    rpa | [10/10] Consultando CUFE 70d1aab6f793d4fc…
+2026-11-08 23:12:03,317 INFO    rpa |   -> descargado (18.24s, captcha=auto+auto, intentos=1)
+2026-11-08 23:12:03,409 INFO    root | RPA: 10/10 PDF descargados
+2026-11-08 23:12:19,788 INFO    ocr | 2a90ab2ce6b54e505fc9f463bffb528244abef80d9ab1a9a39d771169c7cfe52b9a48b6feab1fdceb8b4b59ff6e319db.pdf -> {'archivo': '2a90ab2ce6b54e505fc9f463bffb528244abef80d9ab1a9a39d771169c7cfe52b9a48b6feab1fdceb8b4b59ff6e319db.pdf', 'paginas': 2, 'seg_render': 2.885, 'seg_ocr': 5.674, 'seg_parseo': 0.946, 'seg_total': 9.596, 'inclinacion_corregida_grados': 0.0, 'palabras_ocr': 375, 'confianza_media': 91.3, 'pct_palabras_conf_bajo_60': 5.07, 'campos_encabezado_ok': 3, 'items_extraidos': 1, 'items_con_vacios': 1, 'exactitud_vs_capa_texto_pct': None, 'requiere_revision': 'ítems con campos vacíos', 'estado': 'ok'}
+2026-11-08 23:12:28,999 INFO    ocr | 341a447c4891f8e302771bf6a6d95d7011e72d44a8cb670356cbb5e92549824eb0071c542261d837978cfd351d2131d1.pdf -> {'archivo': '341a447c4891f8e302771bf6a6d95d7011e72d44a8cb670356cbb5e92549824eb0071c542261d837978cfd351d2131d1.pdf', 'paginas': 2, 'seg_render': 2.908, 'seg_ocr': 4.916, 'seg_parseo': 1.327, 'seg_total': 9.202, 'inclinacion_corregida_grados': 0.0, 'palabras_ocr': 424, 'confianza_media': 91.58, 'pct_palabras_conf_bajo_60': 3.07, 'campos_encabezado_ok': 3, 'items_extraidos': 1, 'items_con_vacios': 0, 'exactitud_vs_capa_texto_pct': 85.71, 'requiere_revision': 'exactitud < 95%', 'estado': 'ok'}
+2026-11-08 23:12:37,458 INFO    ocr | 3e6331e537f08a54ec2d9f38904afaae80b16ffa502a12fd9aba388048d50d76b311809be9236aaa1bd1cc781a9d87f3.pdf -> {'archivo': '3e6331e537f08a54ec2d9f38904afaae80b16ffa502a12fd9aba388048d50d76b311809be9236aaa1bd1cc781a9d87f3.pdf', 'paginas': 2, 'seg_render': 2.504, 'seg_ocr': 4.459, 'seg_parseo': 1.439, 'seg_total': 8.443, 'inclinacion_corregida_grados': 0.0, 'palabras_ocr': 404, 'confianza_media': 90.97, 'pct_palabras_conf_bajo_60': 3.71, 'campos_encabezado_ok': 3, 'items_extraidos': 1, 'items_con_vacios': 0, 'exactitud_vs_capa_texto_pct': 71.43, 'requiere_revision': 'exactitud < 95%', 'estado': 'ok'}
+2026-11-08 23:12:47,318 INFO    ocr | 6a7ec741dd95ff7f5240481b3ed287f85eea3b665a8b26b91b376095f9bb134d2397ec96586fd16e116ef247a6506770.pdf -> {'archivo': '6a7ec741dd95ff7f5240481b3ed287f85eea3b665a8b26b91b376095f9bb134d2397ec96586fd16e116ef247a6506770.pdf', 'paginas': 2, 'seg_render': 2.742, 'seg_ocr': 4.508, 'seg_parseo': 2.507, 'seg_total': 9.853, 'inclinacion_corregida_grados': 0.0, 'palabras_ocr': 422, 'confianza_media': 90.23, 'pct_palabras_conf_bajo_60': 6.64, 'campos_encabezado_ok': 3, 'items_extraidos': 3, 'items_con_vacios': 1, 'exactitud_vs_capa_texto_pct': 14.29, 'requiere_revision': 'ítems con campos vacíos; exactitud < 95%', 'estado': 'ok'}
+2026-11-08 23:12:56,579 INFO    ocr | 70d1aab6f793d4fc7151d69400138cf1bd147e54aaeaf274072898f9d12d979e86e8de79fef27668896db76589323ad0.pdf -> {'archivo': '70d1aab6f793d4fc7151d69400138cf1bd147e54aaeaf274072898f9d12d979e86e8de79fef27668896db76589323ad0.pdf', 'paginas': 2, 'seg_render': 2.481, 'seg_ocr': 4.805, 'seg_parseo': 1.909, 'seg_total': 9.256, 'inclinacion_corregida_grados': 0.0, 'palabras_ocr': 410, 'confianza_media': 91.77, 'pct_palabras_conf_bajo_60': 4.15, 'campos_encabezado_ok': 3, 'items_extraidos': 2, 'items_con_vacios': 1, 'exactitud_vs_capa_texto_pct': 21.43, 'requiere_revision': 'ítems con campos vacíos; exactitud < 95%', 'estado': 'ok'}
+2026-11-08 23:13:05,193 INFO    ocr | 8e7b821b46445807245ad6c223d6a054923cea3e5dc59983e55a40cfeac2a4f570eccb198446b27d15c8d834c2e2ced9.pdf -> {'archivo': '8e7b821b46445807245ad6c223d6a054923cea3e5dc59983e55a40cfeac2a4f570eccb198446b27d15c8d834c2e2ced9.pdf', 'paginas': 2, 'seg_render': 2.466, 'seg_ocr': 4.588, 'seg_parseo': 1.494, 'seg_total': 8.606, 'inclinacion_corregida_grados': 0.0, 'palabras_ocr': 385, 'confianza_media': 92.72, 'pct_palabras_conf_bajo_60': 2.34, 'campos_encabezado_ok': 3, 'items_extraidos': 1, 'items_con_vacios': 0, 'exactitud_vs_capa_texto_pct': 71.43, 'requiere_revision': 'exactitud < 95%', 'estado': 'ok'}
+2026-11-08 23:13:14,914 INFO    ocr | bbed883f80308e0e0e16e52a1286d71274b1a78419875458c590fcec41c065eda762aaef478775dc219de3c5e2d6400b.pdf -> {'archivo': 'bbed883f80308e0e0e16e52a1286d71274b1a78419875458c590fcec41c065eda762aaef478775dc219de3c5e2d6400b.pdf', 'paginas': 2, 'seg_render': 2.684, 'seg_ocr': 4.741, 'seg_parseo': 2.25, 'seg_total': 9.717, 'inclinacion_corregida_grados': 0.0, 'palabras_ocr': 428, 'confianza_media': 89.32, 'pct_palabras_conf_bajo_60': 6.78, 'campos_encabezado_ok': 3, 'items_extraidos': 2, 'items_con_vacios': 0, 'exactitud_vs_capa_texto_pct': 28.57, 'requiere_revision': 'exactitud < 95%', 'estado': 'ok'}
+2026-11-08 23:13:23,315 INFO    ocr | c2e740942c1925d57f2e82254f21992cbad461a0df57fd42a1475fbe71ba5ab68a824c03487cbc19e80c50e436dd30fe.pdf -> {'archivo': 'c2e740942c1925d57f2e82254f21992cbad461a0df57fd42a1475fbe71ba5ab68a824c03487cbc19e80c50e436dd30fe.pdf', 'paginas': 2, 'seg_render': 2.802, 'seg_ocr': 4.814, 'seg_parseo': 0.699, 'seg_total': 8.391, 'inclinacion_corregida_grados': 0.0, 'palabras_ocr': 508, 'confianza_media': 90.68, 'pct_palabras_conf_bajo_60': 4.92, 'campos_encabezado_ok': 3, 'items_extraidos': 0, 'items_con_vacios': 0, 'exactitud_vs_capa_texto_pct': 8.57, 'requiere_revision': 'sin ítems; exactitud < 95%', 'estado': 'ok'}
+2026-11-08 23:13:27,985 INFO    ocr | eccc372e4bdb8125cf2e896b405ddb91918c7c6d92238892e3b36bd3b6a86929a3c47ed18ae8f559a1bf51b89ab560f1.pdf -> {'archivo': 'eccc372e4bdb8125cf2e896b405ddb91918c7c6d92238892e3b36bd3b6a86929a3c47ed18ae8f559a1bf51b89ab560f1.pdf', 'paginas': 2, 'seg_render': 1.843, 'seg_ocr': 2.321, 'seg_parseo': 0.481, 'seg_total': 4.667, 'inclinacion_corregida_grados': 0.0, 'palabras_ocr': 390, 'confianza_media': 92.31, 'pct_palabras_conf_bajo_60': 2.82, 'campos_encabezado_ok': 3, 'items_extraidos': 0, 'items_con_vacios': 0, 'exactitud_vs_capa_texto_pct': None, 'requiere_revision': 'sin ítems', 'estado': 'ok'}
+2026-11-08 23:13:42,882 INFO    ocr | f639eb72baf2e301eddde8e8e5087295831a12c781d4cf6b4671932cdfa3599223aa3375af807a1f5d66aa1543c9fb91.pdf -> {'archivo': 'f639eb72baf2e301eddde8e8e5087295831a12c781d4cf6b4671932cdfa3599223aa3375af807a1f5d66aa1543c9fb91.pdf', 'paginas': 2, 'seg_render': 5.959, 'seg_ocr': 5.194, 'seg_parseo': 3.624, 'seg_total': 14.881, 'inclinacion_corregida_grados': 0.0, 'palabras_ocr': 487, 'confianza_media': 91.2, 'pct_palabras_conf_bajo_60': 4.52, 'campos_encabezado_ok': 3, 'items_extraidos': 4, 'items_con_vacios': 0, 'exactitud_vs_capa_texto_pct': 45.71, 'requiere_revision': 'exactitud < 95%', 'estado': 'ok'}
+2026-11-08 23:13:42,966 INFO    ocr | Resumen: {'archivos': 10, 'procesados_ok': 10, 'tiempo_total_seg': 92.73, 'tiempo_promedio_por_factura_seg': 9.26, 'tiempo_promedio_ocr_por_pagina_seg': 2.3, 'confianza_media_ocr': 91.21, 'items_totales': 15, 'exactitud_media_vs_capa_texto_pct': 43.39, 'facturas_para_revision': 10, 'dpi': 300, 'motor': 'Tesseract 5.4.0.20240606 (spa) --oem 1 --psm 3'}
+2026-11-08 23:13:43,066 INFO    root | Estado final: PARCIAL
+2026-11-08 23:27:45,753 INFO    ocr | 2a90ab2ce6b54e505fc9f463bffb528244abef80d9ab1a9a39d771169c7cfe52b9a48b6feab1fdceb8b4b59ff6e319db.pdf -> {'archivo': '2a90ab2ce6b54e505fc9f463bffb528244abef80d9ab1a9a39d771169c7cfe52b9a48b6feab1fdceb8b4b59ff6e319db.pdf', 'paginas': 2, 'seg_render': 2.188, 'seg_ocr': 3.524, 'seg_parseo': 0.993, 'seg_total': 6.795, 'inclinacion_corregida_grados': 0.0, 'palabras_ocr': 375, 'confianza_media': 91.3, 'pct_palabras_conf_bajo_60': 5.07, 'campos_encabezado_ok': 3, 'items_extraidos': 1, 'items_con_vacios': 1, 'exactitud_vs_capa_texto_pct': 85.71, 'requiere_revision': 'ítems con campos vacíos; exactitud < 95%', 'estado': 'ok'}
+2026-11-08 23:27:53,919 INFO    ocr | 341a447c4891f8e302771bf6a6d95d7011e72d44a8cb670356cbb5e92549824eb0071c542261d837978cfd351d2131d1.pdf -> {'archivo': '341a447c4891f8e302771bf6a6d95d7011e72d44a8cb670356cbb5e92549824eb0071c542261d837978cfd351d2131d1.pdf', 'paginas': 2, 'seg_render': 2.069, 'seg_ocr': 3.84, 'seg_parseo': 2.058, 'seg_total': 8.153, 'inclinacion_corregida_grados': 0.0, 'palabras_ocr': 424, 'confianza_media': 91.58, 'pct_palabras_conf_bajo_60': 3.07, 'campos_encabezado_ok': 3, 'items_extraidos': 2, 'items_con_vacios': 1, 'exactitud_vs_capa_texto_pct': 78.57, 'requiere_revision': 'ítems con campos vacíos; exactitud < 95%', 'estado': 'ok'}
+2026-11-08 23:28:05,488 INFO    ocr | 3e6331e537f08a54ec2d9f38904afaae80b16ffa502a12fd9aba388048d50d76b311809be9236aaa1bd1cc781a9d87f3.pdf -> {'archivo': '3e6331e537f08a54ec2d9f38904afaae80b16ffa502a12fd9aba388048d50d76b311809be9236aaa1bd1cc781a9d87f3.pdf', 'paginas': 2, 'seg_render': 5.371, 'seg_ocr': 3.939, 'seg_parseo': 2.055, 'seg_total': 11.557, 'inclinacion_corregida_grados': 0.0, 'palabras_ocr': 404, 'confianza_media': 90.97, 'pct_palabras_conf_bajo_60': 3.71, 'campos_encabezado_ok': 3, 'items_extraidos': 2, 'items_con_vacios': 1, 'exactitud_vs_capa_texto_pct': 64.29, 'requiere_revision': 'ítems con campos vacíos; exactitud < 95%', 'estado': 'ok'}
+2026-11-08 23:28:17,449 INFO    ocr | 6a7ec741dd95ff7f5240481b3ed287f85eea3b665a8b26b91b376095f9bb134d2397ec96586fd16e116ef247a6506770.pdf -> {'archivo': '6a7ec741dd95ff7f5240481b3ed287f85eea3b665a8b26b91b376095f9bb134d2397ec96586fd16e116ef247a6506770.pdf', 'paginas': 2, 'seg_render': 5.106, 'seg_ocr': 4.057, 'seg_parseo': 2.618, 'seg_total': 11.954, 'inclinacion_corregida_grados': 0.0, 'palabras_ocr': 422, 'confianza_media': 90.23, 'pct_palabras_conf_bajo_60': 6.64, 'campos_encabezado_ok': 3, 'items_extraidos': 2, 'items_con_vacios': 0, 'exactitud_vs_capa_texto_pct': 92.86, 'requiere_revision': 'exactitud < 95%', 'estado': 'ok'}
+2026-11-08 23:28:28,190 INFO    ocr | 70d1aab6f793d4fc7151d69400138cf1bd147e54aaeaf274072898f9d12d979e86e8de79fef27668896db76589323ad0.pdf -> {'archivo': '70d1aab6f793d4fc7151d69400138cf1bd147e54aaeaf274072898f9d12d979e86e8de79fef27668896db76589323ad0.pdf', 'paginas': 2, 'seg_render': 5.065, 'seg_ocr': 3.862, 'seg_parseo': 1.64, 'seg_total': 10.735, 'inclinacion_corregida_grados': 0.0, 'palabras_ocr': 410, 'confianza_media': 91.77, 'pct_palabras_conf_bajo_60': 4.15, 'campos_encabezado_ok': 3, 'items_extraidos': 1, 'items_con_vacios': 0, 'exactitud_vs_capa_texto_pct': 100.0, 'requiere_revision': '', 'estado': 'ok'}
+2026-11-08 23:28:38,721 INFO    ocr | 8e7b821b46445807245ad6c223d6a054923cea3e5dc59983e55a40cfeac2a4f570eccb198446b27d15c8d834c2e2ced9.pdf -> {'archivo': '8e7b821b46445807245ad6c223d6a054923cea3e5dc59983e55a40cfeac2a4f570eccb198446b27d15c8d834c2e2ced9.pdf', 'paginas': 2, 'seg_render': 4.887, 'seg_ocr': 3.793, 'seg_parseo': 1.683, 'seg_total': 10.521, 'inclinacion_corregida_grados': 0.0, 'palabras_ocr': 385, 'confianza_media': 92.72, 'pct_palabras_conf_bajo_60': 2.34, 'campos_encabezado_ok': 3, 'items_extraidos': 1, 'items_con_vacios': 0, 'exactitud_vs_capa_texto_pct': 100.0, 'requiere_revision': '', 'estado': 'ok'}
+2026-11-08 23:28:50,800 INFO    ocr | bbed883f80308e0e0e16e52a1286d71274b1a78419875458c590fcec41c065eda762aaef478775dc219de3c5e2d6400b.pdf -> {'archivo': 'bbed883f80308e0e0e16e52a1286d71274b1a78419875458c590fcec41c065eda762aaef478775dc219de3c5e2d6400b.pdf', 'paginas': 2, 'seg_render': 5.272, 'seg_ocr': 4.129, 'seg_parseo': 2.504, 'seg_total': 12.066, 'inclinacion_corregida_grados': 0.0, 'palabras_ocr': 428, 'confianza_media': 89.32, 'pct_palabras_conf_bajo_60': 6.78, 'campos_encabezado_ok': 3, 'items_extraidos': 2, 'items_con_vacios': 0, 'exactitud_vs_capa_texto_pct': 71.43, 'requiere_revision': 'exactitud < 95%', 'estado': 'ok'}
+2026-11-08 23:29:06,441 INFO    ocr | c2e740942c1925d57f2e82254f21992cbad461a0df57fd42a1475fbe71ba5ab68a824c03487cbc19e80c50e436dd30fe.pdf -> {'archivo': 'c2e740942c1925d57f2e82254f21992cbad461a0df57fd42a1475fbe71ba5ab68a824c03487cbc19e80c50e436dd30fe.pdf', 'paginas': 2, 'seg_render': 5.581, 'seg_ocr': 4.376, 'seg_parseo': 5.462, 'seg_total': 15.634, 'inclinacion_corregida_grados': 0.0, 'palabras_ocr': 508, 'confianza_media': 90.68, 'pct_palabras_conf_bajo_60': 4.92, 'campos_encabezado_ok': 3, 'items_extraidos': 5, 'items_con_vacios': 0, 'exactitud_vs_capa_texto_pct': 83.33, 'requiere_revision': 'exactitud < 95%', 'estado': 'ok'}
+2026-11-08 23:29:17,315 INFO    ocr | eccc372e4bdb8125cf2e896b405ddb91918c7c6d92238892e3b36bd3b6a86929a3c47ed18ae8f559a1bf51b89ab560f1.pdf -> {'archivo': 'eccc372e4bdb8125cf2e896b405ddb91918c7c6d92238892e3b36bd3b6a86929a3c47ed18ae8f559a1bf51b89ab560f1.pdf', 'paginas': 2, 'seg_render': 5.119, 'seg_ocr': 3.878, 'seg_parseo': 1.7, 'seg_total': 10.869, 'inclinacion_corregida_grados': 0.0, 'palabras_ocr': 390, 'confianza_media': 92.31, 'pct_palabras_conf_bajo_60': 2.82, 'campos_encabezado_ok': 3, 'items_extraidos': 1, 'items_con_vacios': 0, 'exactitud_vs_capa_texto_pct': 85.71, 'requiere_revision': 'exactitud < 95%', 'estado': 'ok'}
+2026-11-08 23:29:28,857 INFO    ocr | f639eb72baf2e301eddde8e8e5087295831a12c781d4cf6b4671932cdfa3599223aa3375af807a1f5d66aa1543c9fb91.pdf -> {'archivo': 'f639eb72baf2e301eddde8e8e5087295831a12c781d4cf6b4671932cdfa3599223aa3375af807a1f5d66aa1543c9fb91.pdf', 'paginas': 2, 'seg_render': 3.966, 'seg_ocr': 3.931, 'seg_parseo': 3.535, 'seg_total': 11.529, 'inclinacion_corregida_grados': 0.0, 'palabras_ocr': 487, 'confianza_media': 91.2, 'pct_palabras_conf_bajo_60': 4.52, 'campos_encabezado_ok': 3, 'items_extraidos': 5, 'items_con_vacios': 0, 'exactitud_vs_capa_texto_pct': 94.29, 'requiere_revision': 'exactitud < 95%', 'estado': 'ok'}
+2026-11-08 23:29:28,940 INFO    ocr | Resumen: {'archivos': 10, 'procesados_ok': 10, 'tiempo_total_seg': 109.91, 'tiempo_promedio_por_factura_seg': 10.98, 'tiempo_promedio_ocr_por_pagina_seg': 1.97, 'confianza_media_ocr': 91.21, 'items_totales': 22, 'exactitud_media_vs_capa_texto_pct': 85.62, 'facturas_para_revision': 8, 'dpi': 300, 'motor': 'Tesseract 5.4.0.20240606 (spa) --oem 1 --psm 3'}
+2026-11-08 23:29:29,317 INFO    root | Estado final: PARCIAL
