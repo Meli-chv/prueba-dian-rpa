@@ -8,6 +8,14 @@ where python >nul 2>nul || (echo [ERROR] No se encontro Python. Instalalo desde 
 where tesseract >nul 2>nul || if not exist "C:\Program Files\Tesseract-OCR\tesseract.exe" (echo [ERROR] No se encontro Tesseract. Instalalo ^(UB Mannheim^) con el idioma Spanish. & pause & exit /b 1)
 if exist "C:\Program Files\Tesseract-OCR" set "PATH=%PATH%;C:\Program Files\Tesseract-OCR"
 
+if not exist ".env" (
+  echo El portal de la DIAN pide un NIT junto a cada CUFE ^(tambien es la clave del PDF^).
+  set /p NIT="Escribe el NIT y presiona Enter: "
+  call powershell -NoProfile -Command "(Get-Content .env.example) -replace '^DIAN_NIT=$','DIAN_NIT=%%NIT%%' | Set-Content .env"
+)
+for /f "tokens=2 delims==" %%a in ('findstr /b "DIAN_NIT=" .env') do set "NIT_ACTUAL=%%a"
+echo NIT configurado: %NIT_ACTUAL%
+
 if not exist ".venv" (
   echo [1/3] Preparando el entorno por primera vez ^(tarda unos minutos^)...
   python -m venv .venv || (pause & exit /b 1)
